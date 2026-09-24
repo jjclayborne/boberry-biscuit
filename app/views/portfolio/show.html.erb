@@ -1,0 +1,105 @@
+<% content_for :title, "Nate Kammerer" %>
+
+<% content_for :head do %>
+  <link rel="stylesheet" href="https://use.typekit.net/ryd7bnn.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    html,body{margin:0;background:#f6f3ec;color:#1c1a17}
+    body{font-family:"adobe-jenson-pro","Adobe Jenson Pro","Jenson","EB Garamond",Georgia,serif}
+    a{color:#7a1414;text-decoration:underline;text-underline-offset:2px}
+    a:hover{color:#1c1a17;background:#7a1414;color:#f6f3ec;text-decoration:none}
+    a:visited{color:#4a1a3a}
+    ::selection{background:#7a1414;color:#f6f3ec}
+    @keyframes blink{50%{opacity:0}}
+    body[data-yellow],body[data-yellow] [style*="background"]{background:#d6cc3a !important}
+    body[data-yellow] *{color:#9a6200 !important;border-color:#9a6200 !important}
+    body[data-yellow] a:hover{background:#9a6200 !important;color:#d6cc3a !important}
+    body[data-yellow] ::selection{background:#9a6200;color:#d6cc3a}
+  </style>
+<% end %>
+
+<div data-controller="portfolio">
+  <div data-portfolio-target="screen" data-display="grid" style="display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);height:100vh;overflow:hidden">
+    <div style="overflow-y:auto;min-height:0;height:100vh;box-sizing:border-box"><div style="padding:40px 48px 32px;min-height:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:36px">
+      <header style="display:flex;flex-direction:column;gap:2px;font-size:22px;line-height:1.25;white-space:nowrap;overflow-x:clip;flex-shrink:0;color:#8a8478">
+        <div>---------------------------------------------------------------------------------------------------------------------------------</div>
+        <div>---------- <span style="color:#1c1a17;font-size:34px;font-weight:500;letter-spacing:.01em">Nate Kammerer</span> ---------------------------------------------------------------------------------------------------</div>
+        <div>------------------ <em style="color:#1c1a17">artist, designer, photographer</em> ----------------------------------------------------------</div>
+        <div>---------------------------------------------------------------------------------------------------------------------------------</div>
+      </header>
+
+      <nav style="display:flex;gap:20px;font-size:19px">
+        <a href="#selected">[Selected Works]</a>
+        <a href="#odds">[Odds &amp; Ends]</a>
+      </nav>
+
+      <section style="display:flex;flex-direction:column;gap:8px;max-width:620px">
+        <h2 style="margin:0;font-size:15px;font-weight:400;font-style:italic;color:#7a1414">artist bio</h2>
+        <p style="margin:0;font-size:20px;line-height:1.5;text-wrap:pretty">Nate Kammerer is an artist and designer based in Nashville, Tennessee, currently studying Design Communications and Photography at the Watkins College of Art at Belmont University. His favorite color is <span style="color:#7a1414">dark red</span>.</p>
+      </section>
+
+      <section id="selected" style="display:flex;flex-direction:column;gap:10px">
+        <h2 style="margin:0;font-size:15px;font-weight:400;font-style:italic;color:#7a1414">selected commissions &amp; sample work</h2>
+        <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:20px;line-height:1.35">
+          <% @commissions.each do |p| %>
+            <li style="display:flex;gap:10px"><span style="color:#8a8478">-</span><span><%= p[:kind] %> for <a href="#/<%= p[:id] %>"><%= p[:client] %></a></span></li>
+          <% end %>
+        </ul>
+      </section>
+
+      <section id="odds" style="display:flex;flex-direction:column;gap:10px">
+        <h2 style="margin:0;font-size:15px;font-weight:400;font-style:italic;color:#7a1414">artwork</h2>
+        <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:20px;line-height:1.35">
+          <% @artwork.each do |p| %>
+            <li style="display:flex;gap:10px"><span style="color:#8a8478">-</span><a href="#/<%= p[:id] %>"><em><%= p[:client] %></em></a></li>
+          <% end %>
+        </ul>
+      </section>
+
+      <footer style="margin-top:auto;padding-top:24px;display:flex;gap:28px;flex-wrap:wrap;font-size:14px;color:#8a8478;border-top:1px dashed #b9b2a4">
+        <span>© Nate Kammerer 2026</span>
+        <span>All Rights Reserved</span>
+        <span>last updated 09.22.2026<span style="animation:blink 1s steps(1) infinite">_</span></span>
+        <label style="margin-left:auto;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" data-action="change->portfolio#toggleYellow" style="margin:0;accent-color:#9a6200">yellow?</label>
+      </footer>
+    </div></div>
+
+    <aside style="border-left:1px solid #1c1a17;display:flex;flex-direction:column;min-height:0">
+      <div style="flex:1;min-height:0;position:relative;background:repeating-linear-gradient(135deg,#e8e2d5 0 6px,#efeae0 6px 12px);display:flex;align-items:center;justify-content:center">
+        <span data-portfolio-target="heroLabel" style="font:12px ui-monospace,Menlo,monospace;color:#6b655a;background:#f6f3ec;padding:4px 8px;border:1px solid #b9b2a4"></span>
+      </div>
+      <div style="border-top:1px solid #1c1a17;padding:10px 14px;font-size:14px;display:flex;justify-content:space-between;gap:12px">
+        <em data-portfolio-target="heroCaption"></em>
+        <a href="#" data-action="click->portfolio#shuffleHero:prevent" title="another one">↻</a>
+      </div>
+    </aside>
+  </div>
+
+  <% @projects.each do |project| %>
+    <div data-portfolio-target="screen" data-project-id="<%= project[:id] %>" data-display="flex" style="display:none;height:100vh;flex-direction:column;overflow:hidden">
+      <nav style="padding:22px 48px;font-size:17px;display:flex;gap:10px;flex-wrap:wrap;border-bottom:1px dashed #b9b2a4">
+        <a href="#" data-action="click->portfolio#goHome">home</a><span style="color:#8a8478">›</span>
+        <span><%= project[:section] %></span><span style="color:#8a8478">›</span>
+        <span style="color:#7a1414"><%= project[:client_lower] %></span>
+      </nav>
+      <div style="flex:1;min-height:0;display:flex;overflow-x:auto;overflow-y:hidden">
+        <div style="flex:none;width:400px;padding:36px 40px 36px 48px;display:flex;flex-direction:column;gap:14px;border-right:1px solid #1c1a17">
+          <h1 style="margin:0;font-size:34px;font-weight:500"><%= project[:title] %></h1>
+          <p style="margin:0;font-size:14px;font-style:italic;color:#7a1414">for <%= project[:client] %></p>
+          <p style="margin:0;font-size:18px;line-height:1.55;text-wrap:pretty"><%= project[:body] %></p>
+          <p style="margin:auto 0 0;font-size:14px;color:#8a8478">scroll → → →</p>
+        </div>
+        <% project[:images].each do |img| %>
+          <div style="flex:none;height:100%;aspect-ratio:<%= img[:ratio] %>;padding:36px 0 36px 36px;box-sizing:border-box;display:flex;flex-direction:column;gap:8px">
+            <div style="flex:1;background:repeating-linear-gradient(135deg,#e8e2d5 0 6px,#efeae0 6px 12px);border:1px solid #1c1a17;display:flex;align-items:center;justify-content:center">
+              <span style="font:12px ui-monospace,Menlo,monospace;color:#6b655a;background:#f6f3ec;padding:4px 8px;border:1px solid #b9b2a4"><%= img[:label] %></span>
+            </div>
+            <span style="font-size:13px;color:#8a8478">fig. <%= img[:n] %></span>
+          </div>
+        <% end %>
+        <div style="flex:none;width:36px"></div>
+      </div>
+    </div>
+  <% end %>
+</div>
