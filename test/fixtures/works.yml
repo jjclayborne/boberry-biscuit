@@ -1,11 +1,20 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# Works carry their picture, so these are attached in test_helper's setup
+# rather than declared here.
+slat_saw:
+  name: Slat Saw
+  blurb: Cedar coming off the saw.
+  medium: photography
+  year: 2025
+  position: 1
+  image_width: 1200
+  image_height: 1500
+  project: musgrave
 
-# This model initially had no columns defined. If you add columns to the
-# model remove the "{}" from the fixture names and add the columns immediately
-# below each fixture, per the syntax in the comments below
-#
-one: {}
-# column: value
-#
-two: {}
-# column: value
+lacquer_line:
+  name: Lacquer Line
+  medium: photography
+  year: 2025
+  position: 2
+  image_width: 1500
+  image_height: 1000
+  project: musgrave

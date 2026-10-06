@@ -1,0 +1,47 @@
+<% content_for :title, "Your account — Nate Kammerer" %>
+
+<div class="studio-page">
+  <%= render "shared/masthead", subtitle: "the studio" %>
+  <%= render "shared/nav", current: :account %>
+  <%= render "shared/flash" %>
+
+  <section class="studio-section" style="max-width:520px">
+    <h1 class="studio-h1">Your account</h1>
+    <p class="studio-prose">How you sign in. This is the only account there is, so keep it
+      somewhere safe. Leave the password fields empty to keep the one you have.</p>
+
+    <%= form_with model: @user, url: account_path, method: :patch, class: "studio-fields", style: "margin-top:12px", data: { controller: "field-errors" } do |form| %>
+      <%= render "shared/errors", record: @user %>
+
+      <div class="studio-field">
+        <%= form.label :name, "name" %>
+        <%= form.text_field :name, required: true %>
+      </div>
+
+      <div class="studio-field">
+        <%= form.label :email, "email" %>
+        <%= form.email_field :email, required: true, autocomplete: "email" %>
+      </div>
+
+      <div class="studio-pair">
+        <div class="studio-field">
+          <%= form.label :password, "new password" %>
+          <%= form.password_field :password, autocomplete: "new-password" %>
+          <span class="hint">at least 8 characters</span>
+        </div>
+
+        <div class="studio-field">
+          <%= form.label :password_confirmation, "again" %>
+          <%= form.password_field :password_confirmation, autocomplete: "new-password" %>
+        </div>
+      </div>
+
+      <div class="studio-actions">
+        <%= form.submit "[Save account]", class: "studio-button" %>
+        <%= link_to "[back to the dashboard]", dashboard_path, class: "studio-link", style: "font-size:15px" %>
+      </div>
+    <% end %>
+  </section>
+
+  <%= render "shared/footer" %>
+</div>

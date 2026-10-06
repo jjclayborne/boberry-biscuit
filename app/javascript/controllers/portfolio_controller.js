@@ -1,17 +1,10 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["screen", "heroLabel", "heroCaption"]
-
-  heroes = [
-    { label: "highlighted image 1", caption: "Hatch Show Print, 2025" },
-    { label: "highlighted image 2", caption: "Rites of Passage, 2026" },
-    { label: "highlighted image 3", caption: "Musgrave Pencil Co., 2025" },
-    { label: "highlighted image 4", caption: "Welcome Fabric, 2026" }
-  ]
+  static targets = ["screen", "hero", "heroCaption"]
 
   connect() {
-    this.heroIndex = Math.floor(Math.random() * this.heroes.length)
+    this.heroIndex = Math.floor(Math.random() * Math.max(this.heroTargets.length, 1))
     this.renderHero()
 
     this.onHashChange = () => this.render()
@@ -37,13 +30,16 @@ export default class extends Controller {
   }
 
   renderHero() {
-    const hero = this.heroes[this.heroIndex]
-    this.heroLabelTarget.textContent = hero.label
-    this.heroCaptionTarget.textContent = hero.caption
+    if (!this.hasHeroTarget) return
+
+    this.heroTargets.forEach((hero, index) => {
+      hero.style.display = index === this.heroIndex ? "block" : "none"
+    })
+    this.heroCaptionTarget.textContent = this.heroTargets[this.heroIndex].dataset.caption
   }
 
   shuffleHero() {
-    this.heroIndex = (this.heroIndex + 1) % this.heroes.length
+    this.heroIndex = (this.heroIndex + 1) % this.heroTargets.length
     this.renderHero()
   }
 

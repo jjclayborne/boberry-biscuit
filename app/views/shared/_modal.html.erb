@@ -1,0 +1,10 @@
+<%# id: dom id used to open it, title: heading. Body comes from the block. %>
+<dialog id="<%= id %>" class="studio-modal" data-studio-target="modal" data-studio-open="<%= modal_open?(id) %>">
+  <div class="sheet">
+    <header>
+      <h2><%= title %></h2>
+      <button type="button" class="studio-button small quiet" data-action="studio#close">[close]</button>
+    </header>
+    <%= yield %>
+  </div>
+</dialog>

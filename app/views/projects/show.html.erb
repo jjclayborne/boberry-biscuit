@@ -1,10 +1,99 @@
-<p style="color: green"><%= notice %></p>
+<% content_for :title, "#{@project.display_name} — Studio" %>
 
-<%= render @project %>
+<div class="studio-page">
+  <%= render "shared/masthead", subtitle: "the studio" %>
+  <%= render "shared/nav", current: :dashboard %>
 
-<div>
-  <%= link_to "Edit this project", edit_project_path(@project) %> |
-  <%= link_to "Back to projects", projects_path %>
+  <nav class="studio-crumbs">
+    <%= link_to "dashboard", dashboard_path %><span class="sep">›</span>
+    <span><%= @project.commission_section? ? "selected commissions & sample work" : "artwork" %></span><span class="sep">›</span>
+    <span class="here"><%= @project.display_name.to_s.downcase %></span>
+  </nav>
 
-  <%= button_to "Destroy this project", @project, method: :delete %>
+  <%= render "shared/flash" %>
+
+  <section class="studio-section">
+    <h1 class="studio-h1"><%= @project.display_name %></h1>
+    <p class="studio-label">
+      <% if @project.commission_section? %>
+        <%= @project.kind.presence || "work" %> for <%= @project.commission %>
+      <% else %>
+        artwork
+      <% end %>
+      <%= "· #{@project.year}" if @project.year %>
+    </p>
+
+    <% if @project.description.present? %>
+      <p class="studio-prose"><%= @project.description %></p>
+    <% else %>
+      <p class="studio-note">No throughline written yet — <em>edit details</em> to say what holds these works together.</p>
+    <% end %>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding-top:4px">
+      <span class="studio-tag"><%= pluralize(@works.size, "work") %></span>
+      <span class="studio-tag <%= "on" if @project.published? %>"><%= @project.published? ? "on the portfolio" : "draft" %></span>
+      <span class="studio-tag">/<%= @project.to_param %></span>
+    </div>
+
+    <div class="studio-actions">
+      <button type="button" class="studio-button" data-action="studio#open"
+              data-studio-modal-param="work-new">[+ Upload work]</button>
+      <button type="button" class="studio-button" data-action="studio#open"
+              data-studio-modal-param="project-details">[Edit details]</button>
+
+      <% if @project.publishable? %>
+        <%= button_to @project.published? ? "[Hide from portfolio]" : "[Publish]", project_path(@project),
+              method: :patch, params: { project: { published: !@project.published? } }, class: "studio-button" %>
+      <% end %>
+
+      <span class="spacer"></span>
+
+      <% if @project.published? %>
+        <%= link_to "[see it on the site ↗]", root_path(anchor: "/#{@project.to_param}"),
+              class: "studio-link", style: "font-size:15px", target: "_blank", rel: "noopener" %>
+      <% end %>
+      <%= button_to "[Delete project]", project_path(@project), method: :delete, class: "studio-button small quiet",
+            form: { data: { turbo_confirm: "Delete “#{@project.display_name}” and all #{pluralize(@works.size, 'work')} in it?" } } %>
+    </div>
+  </section>
+
+  <hr class="studio-rule">
+
+  <section class="studio-section">
+    <h2 class="studio-label">works in this project</h2>
+
+    <% if @works.any? %>
+      <div class="studio-grid">
+        <% @works.each_with_index do |work, index| %>
+          <%= render "works/work", work: work, fig: index + 1, edit_modal: "work-#{work.id}-edit" %>
+        <% end %>
+      </div>
+      <p class="studio-note">They hang left to right in this order — change <em>order within the project</em> on a work to move it.</p>
+    <% else %>
+      <div class="studio-empty">
+        <span>Nothing hung here yet. A work is the art itself, so it needs its picture to go up.</span>
+        <button type="button" class="studio-button small" data-action="studio#open"
+                data-studio-modal-param="work-new">[+ upload the first work]</button>
+      </div>
+    <% end %>
+  </section>
+
+  <%= render "shared/footer" %>
 </div>
+
+<%# ---- modals ---- %>
+
+<%= render layout: "shared/modal", locals: { id: "project-details", title: "Project details" } do %>
+  <%= render "projects/form", project: @project, url: project_path(@project), method: :patch,
+        submit_label: "[Save project]" %>
+<% end %>
+
+<%= render layout: "shared/modal", locals: { id: "work-new", title: "Upload a work" } do %>
+  <%= render "works/form", work: @new_work, url: works_path, method: :post, submit_label: "[Add work]" %>
+<% end %>
+
+<% @works.each do |work| %>
+  <%= render layout: "shared/modal", locals: { id: "work-#{work.id}-edit", title: work.name } do %>
+    <%= render "works/form", work: work, url: work_path(work), method: :patch, submit_label: "[Save work]" %>
+  <% end %>
+<% end %>

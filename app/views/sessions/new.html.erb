@@ -1,0 +1,39 @@
+<% content_for :title, "Sign in — Nate Kammerer" %>
+
+<div class="studio-gate">
+  <div class="pane">
+    <%= render "shared/masthead", subtitle: "the studio" %>
+
+    <%= render "shared/flash" %>
+
+    <section class="studio-section" style="max-width:420px">
+      <h2 class="studio-label">sign in</h2>
+      <p class="studio-prose">The portfolio out front is for everyone. Back here is just
+        for you — where projects get arranged and works get hung.</p>
+
+      <%= form_with url: sign_in_path, method: :post, class: "studio-fields", style: "margin-top:14px", data: { controller: "field-errors" } do |form| %>
+        <div class="studio-field">
+          <%= form.label :email, "email" %>
+          <%= form.email_field :email, value: @email, autofocus: true, autocomplete: "email", required: true %>
+        </div>
+
+        <div class="studio-field">
+          <%= form.label :password, "password" %>
+          <%= form.password_field :password, autocomplete: "current-password", required: true %>
+        </div>
+
+        <div class="studio-actions">
+          <%= form.submit "[Sign in]", class: "studio-button" %>
+          <%= link_to "[back to the site]", root_path, class: "studio-link", style: "font-size:15px" %>
+        </div>
+      <% end %>
+    </section>
+
+    <p class="studio-note">Forgotten the password? Set a new one from the console:
+      <code>bin/rails runner 'User.first.update!(password: "…")'</code></p>
+  </div>
+
+  <div class="plate">
+    <span class="studio-tag">the studio — Nate only</span>
+  </div>
+</div>

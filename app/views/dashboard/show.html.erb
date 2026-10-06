@@ -1,0 +1,76 @@
+<% content_for :title, "Studio — Nate Kammerer" %>
+
+<div class="studio-page">
+  <%= render "shared/masthead", subtitle: "the studio" %>
+  <%= render "shared/nav", current: :dashboard %>
+  <%= render "shared/flash" %>
+
+  <section class="studio-section">
+    <h1 class="studio-h1">What's hanging</h1>
+    <p class="studio-prose">A project is a section of the gallery — one theme, one
+      throughline, one client. The works are the art inside it.</p>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding-top:4px">
+      <span class="studio-tag"><%= pluralize(@projects.size, "project") %></span>
+      <span class="studio-tag"><%= pluralize(@projects.sum { |project| project.works.size }, "work") %></span>
+      <span class="studio-tag <%= "on" if @projects.any?(&:published?) %>">
+        <%= @projects.count(&:published?) %> on the portfolio
+      </span>
+    </div>
+
+    <div class="studio-actions">
+      <button type="button" class="studio-button" data-action="studio#open"
+              data-studio-modal-param="project-new">[+ New project]</button>
+      <% if @projects.any? %>
+        <button type="button" class="studio-button" data-action="studio#open"
+                data-studio-modal-param="work-new">[+ Upload work]</button>
+      <% end %>
+    </div>
+  </section>
+
+  <hr class="studio-rule">
+
+  <%= render "dashboard/project_section",
+        label: "selected commissions & sample work",
+        projects: @commissions,
+        empty: "No commissions yet. Start one and the portfolio will list it as “medium for client”." %>
+
+  <%= render "dashboard/project_section",
+        label: "artwork",
+        projects: @artwork,
+        empty: "No personal work grouped yet." %>
+
+  <% recent = @projects.flat_map(&:works).sort_by { |work| work.created_at }.reverse.first(8) %>
+  <% if recent.any? %>
+    <hr class="studio-rule">
+    <section class="studio-section">
+      <h2 class="studio-label">most recently hung</h2>
+      <div class="studio-grid">
+        <%= render partial: "works/work", collection: recent, as: :work, locals: { show_project: true } %>
+      </div>
+    </section>
+  <% end %>
+
+  <%= render "shared/footer" %>
+</div>
+
+<%# ---- modals ---- %>
+
+<%= render layout: "shared/modal", locals: { id: "project-new", title: "New project" } do %>
+  <%= render "projects/form", project: @new_project, url: projects_path, method: :post,
+        submit_label: "[Create project]", from: "dashboard" %>
+<% end %>
+
+<% @projects.each do |project| %>
+  <%= render layout: "shared/modal", locals: { id: "project-#{project.to_param}-edit", title: project.display_name } do %>
+    <%= render "projects/form", project: project, url: project_path(project), method: :patch,
+          submit_label: "[Save project]", from: "dashboard" %>
+  <% end %>
+<% end %>
+
+<% if @projects.any? %>
+  <%= render layout: "shared/modal", locals: { id: "work-new", title: "Upload a work" } do %>
+    <%= render "works/form", work: @new_work, url: works_path, method: :post,
+          submit_label: "[Add work]", projects: @projects %>
+  <% end %>
+<% end %>

@@ -10,34 +10,79 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_24_182408) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_06_030000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
 
   create_table "projects", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
-    t.string "commission", null: false
+    t.string "commission"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "slug", null: false
+    t.string "section", default: "commission", null: false
+    t.string "kind"
+    t.integer "year"
+    t.integer "position", default: 0, null: false
+    t.boolean "published", default: false, null: false
+    t.index ["section", "position"], name: "index_projects_on_section_and_position"
+    t.index ["slug"], name: "index_projects_on_slug", unique: true
   end
 
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
-    t.string "password", null: false
-    t.string "user_type"
+    t.string "password_digest", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name", default: "", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
   end
 
   create_table "works", force: :cascade do |t|
     t.string "name", null: false
     t.string "blurb"
-    t.bigint "projects_id", null: false
+    t.bigint "project_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["projects_id"], name: "index_works_on_projects_id"
+    t.string "medium"
+    t.integer "year"
+    t.integer "position", default: 0, null: false
+    t.integer "image_width"
+    t.integer "image_height"
+    t.index ["project_id", "position"], name: "index_works_on_project_id_and_position"
+    t.index ["project_id"], name: "index_works_on_project_id"
   end
 
-  add_foreign_key "works", "projects", column: "projects_id"
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "works", "projects"
 end

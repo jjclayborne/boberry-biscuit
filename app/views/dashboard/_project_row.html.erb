@@ -1,0 +1,23 @@
+<%# One project in the dashboard list, with the handles to change it. %>
+<li class="studio-row">
+  <span class="title"><%= link_to project.display_name, project %></span>
+  <span class="meta"><%= project.listing_label %><%= " · #{project.year}" if project.year %></span>
+  <span class="studio-tag"><%= pluralize(project.works.size, "work") %></span>
+  <span class="studio-tag <%= "on" if project.published? %>"><%= project.published? ? "on the portfolio" : "draft" %></span>
+
+  <span class="actions">
+    <button type="button" class="studio-button small" data-action="studio#open"
+            data-studio-modal-param="project-<%= project.to_param %>-edit">[edit]</button>
+
+    <% if project.publishable? %>
+      <%= button_to project.published? ? "[hide]" : "[publish]", project_path(project), method: :patch,
+            params: { from: "dashboard", project: { published: !project.published? } },
+            class: "studio-button small quiet" %>
+    <% else %>
+      <span class="studio-note" title="A project needs at least one work before it can go up.">needs works</span>
+    <% end %>
+
+    <%= button_to "[delete]", project_path(project), method: :delete, class: "studio-button small quiet",
+          form: { data: { turbo_confirm: "Delete “#{project.display_name}” and all #{pluralize(project.works.size, 'work')} in it?" } } %>
+  </span>
+</li>

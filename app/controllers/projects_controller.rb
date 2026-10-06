@@ -1,70 +1,56 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: %i[ show edit update destroy ]
+  include StudioPages
 
-  # GET /projects or /projects.json
+  layout "studio"
+
+  before_action :set_project, only: %i[ show update destroy ]
+
+  # The dashboard is the list of projects, so /projects just goes there.
   def index
-    @projects = Project.all
+    redirect_to dashboard_path
   end
 
-  # GET /projects/1 or /projects/1.json
+  # GET /projects/:slug -- the studio view of one section of the gallery and
+  # every work hanging in it.
   def show
+    load_project(@project)
   end
 
-  # GET /projects/new
-  def new
-    @project = Project.new
-  end
-
-  # GET /projects/1/edit
-  def edit
-  end
-
-  # POST /projects or /projects.json
+  # POST /projects
   def create
     @project = Project.new(project_params)
 
-    respond_to do |format|
-      if @project.save
-        format.html { redirect_to @project, notice: "Project was successfully created." }
-        format.json { render :show, status: :created, location: @project }
-      else
-        format.html { render :new, status: :unprocessable_content }
-        format.json { render json: @project.errors, status: :unprocessable_content }
-      end
+    if @project.save
+      redirect_to @project, notice: "#{@project.name} is ready for works."
+    else
+      render_dashboard open: "project-new"
     end
   end
 
-  # PATCH/PUT /projects/1 or /projects/1.json
+  # PATCH /projects/:slug
   def update
-    respond_to do |format|
-      if @project.update(project_params)
-        format.html { redirect_to @project, notice: "Project was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @project }
-      else
-        format.html { render :edit, status: :unprocessable_content }
-        format.json { render json: @project.errors, status: :unprocessable_content }
-      end
+    if @project.update(project_params)
+      redirect_to @project, notice: "#{@project.name} updated.", status: :see_other
+    elsif params[:from] == "dashboard"
+      render_dashboard open: "project-#{@project.to_param}-edit"
+    else
+      render_project @project, open: "project-details"
     end
   end
 
-  # DELETE /projects/1 or /projects/1.json
+  # DELETE /projects/:slug
   def destroy
     @project.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to projects_path, notice: "Project was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
+    redirect_to dashboard_path, notice: "#{@project.name} and its works were removed.", status: :see_other
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_project
-      @project = Project.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def project_params
-      params.fetch(:project, {})
-    end
+  def set_project
+    @project = Project.find_by!(slug: params[:id])
+  end
+
+  def project_params
+    params.expect(project: [ :name, :description, :commission, :kind, :section, :year, :slug, :position, :published ])
+  end
 end

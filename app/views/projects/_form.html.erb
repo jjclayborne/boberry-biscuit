@@ -1,17 +1,69 @@
-<%= form_with(model: project) do |form| %>
-  <% if project.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(project.errors.count, "error") %> prohibited this project from being saved:</h2>
+<%#
+  project: the record being edited
+  url / method: where this form posts
+  submit_label: bracketed label for the submit button
+  from: optional origin ("dashboard") so a rejected save comes back on the right page
+%>
+<%= form_with model: project, url: url, method: method, class: "studio-fields", data: { controller: "field-errors" } do |form| %>
+  <%= render "shared/errors", record: project %>
+  <%= hidden_field_tag :from, local_assigns[:from] if local_assigns[:from] %>
 
-      <ul>
-        <% project.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+  <div class="studio-field">
+    <%= form.label :name, "project name" %>
+    <%= form.text_field :name, required: true, autofocus: true, placeholder: "Poster Design & Letterpress" %>
+  </div>
+
+  <div class="studio-pair">
+    <div class="studio-field">
+      <%= form.label :section, "section of the gallery" %>
+      <%= form.select :section, [["selected commissions & sample work", "commission"], ["artwork", "artwork"]] %>
     </div>
-  <% end %>
 
-  <div>
-    <%= form.submit %>
+    <div class="studio-field">
+      <%= form.label :year, "year" %>
+      <%= form.number_field :year, placeholder: Date.current.year, min: 1901, max: Date.current.year + 1 %>
+    </div>
+  </div>
+
+  <div class="studio-pair">
+    <div class="studio-field">
+      <%= form.label :kind, "medium" %>
+      <%= form.text_field :kind, placeholder: "photography" %>
+      <span class="hint">reads as “<em>medium</em> for <em>client</em>” on the portfolio</span>
+    </div>
+
+    <div class="studio-field">
+      <%= form.label :commission, "made for" %>
+      <%= form.text_field :commission, placeholder: "Musgrave Pencil Company" %>
+      <span class="hint">the client — required for a commission</span>
+    </div>
+  </div>
+
+  <div class="studio-field">
+    <%= form.label :description, "throughline" %>
+    <%= form.text_area :description, rows: 4, placeholder: "What holds this group of works together." %>
+  </div>
+
+  <div class="studio-pair">
+    <div class="studio-field">
+      <%= form.label :slug, "web address" %>
+      <%= form.text_field :slug, placeholder: project.name.to_s.parameterize.presence || "poster-design" %>
+      <span class="hint">leave blank to build it from the name</span>
+    </div>
+
+    <div class="studio-field">
+      <%= form.label :position, "order in its section" %>
+      <%= form.number_field :position, min: 0, value: project.position.to_i.zero? ? nil : project.position,
+            placeholder: "last" %>
+    </div>
+  </div>
+
+  <label class="studio-check">
+    <%= form.check_box :published %> show this project on the portfolio
+  </label>
+
+  <div class="studio-actions">
+    <%= form.submit submit_label, class: "studio-button" %>
+    <button type="button" class="studio-button small quiet" data-action="studio#close">[cancel]</button>
   </div>
 <% end %>

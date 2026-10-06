@@ -1,70 +1,50 @@
 class WorksController < ApplicationController
-  before_action :set_work, only: %i[ show edit update destroy ]
+  include StudioPages
 
-  # GET /works or /works.json
+  layout "studio"
+
+  before_action :set_work, only: %i[ update destroy ]
+
   def index
-    @works = Work.all
+    redirect_to dashboard_path
   end
 
-  # GET /works/1 or /works/1.json
-  def show
-  end
-
-  # GET /works/new
-  def new
-    @work = Work.new
-  end
-
-  # GET /works/1/edit
-  def edit
-  end
-
-  # POST /works or /works.json
+  # POST /works -- a work is always uploaded into a project.
   def create
     @work = Work.new(work_params)
 
-    respond_to do |format|
-      if @work.save
-        format.html { redirect_to @work, notice: "Work was successfully created." }
-        format.json { render :show, status: :created, location: @work }
-      else
-        format.html { render :new, status: :unprocessable_content }
-        format.json { render json: @work.errors, status: :unprocessable_content }
-      end
+    if @work.save
+      redirect_to @work.project, notice: "#{@work.name} added to #{@work.project.name}."
+    elsif @work.project
+      render_project @work.project, open: "work-new"
+    else
+      render_dashboard open: "work-new"
     end
   end
 
-  # PATCH/PUT /works/1 or /works/1.json
+  # PATCH /works/:id
   def update
-    respond_to do |format|
-      if @work.update(work_params)
-        format.html { redirect_to @work, notice: "Work was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @work }
-      else
-        format.html { render :edit, status: :unprocessable_content }
-        format.json { render json: @work.errors, status: :unprocessable_content }
-      end
+    if @work.update(work_params)
+      redirect_to @work.project, notice: "#{@work.name} updated.", status: :see_other
+    else
+      render_project @work.project, open: "work-#{@work.id}-edit"
     end
   end
 
-  # DELETE /works/1 or /works/1.json
+  # DELETE /works/:id
   def destroy
+    project = @work.project
     @work.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to works_path, notice: "Work was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
+    redirect_to project, notice: "#{@work.name} was removed.", status: :see_other
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_work
-      @work = Work.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def work_params
-      params.fetch(:work, {})
-    end
+  def set_work
+    @work = Work.find(params.expect(:id))
+  end
+
+  def work_params
+    params.expect(work: [ :name, :blurb, :medium, :year, :position, :project_id, :image, :image_width, :image_height ])
+  end
 end

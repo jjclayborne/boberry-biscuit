@@ -1,0 +1,16 @@
+<%# label: the italic heading, projects: what to list, empty: the line shown when there are none %>
+<section class="studio-section">
+  <h2 class="studio-label"><%= label %></h2>
+
+  <% if projects.any? %>
+    <ul class="studio-list">
+      <%= render partial: "dashboard/project_row", collection: projects, as: :project %>
+    </ul>
+  <% else %>
+    <div class="studio-empty">
+      <span><%= empty %></span>
+      <button type="button" class="studio-button small" data-action="studio#open"
+              data-studio-modal-param="project-new">[+ new project]</button>
+    </div>
+  <% end %>
+</section>

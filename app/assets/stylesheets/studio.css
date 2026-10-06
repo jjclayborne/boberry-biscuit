@@ -1,0 +1,490 @@
+/*
+ * The studio: sign in, dashboard, and the forms behind the portfolio.
+ *
+ * Same design language as the public portfolio in app/views/portfolio/show.html.erb
+ * -- cream paper, dark red accents, dashed rules, ASCII ornament, Adobe Jenson
+ * set large. Everything is scoped under `.studio` so the portfolio page, which
+ * carries its own inline styles, is left alone.
+ */
+
+.studio {
+  --paper: #f6f3ec;
+  --ink: #1c1a17;
+  --red: #7a1414;
+  --muted: #8a8478;
+  --rule: #b9b2a4;
+  --hatch: repeating-linear-gradient(135deg, #e8e2d5 0 6px, #efeae0 6px 12px);
+  --mono: ui-monospace, Menlo, monospace;
+
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "adobe-jenson-pro", "Adobe Jenson Pro", "Jenson", "EB Garamond", Georgia, serif;
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+.studio ::selection { background: var(--red); color: var(--paper); }
+
+.studio a {
+  color: var(--red);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.studio a:hover {
+  background: var(--red);
+  color: var(--paper);
+  text-decoration: none;
+}
+
+/* ---------- layout ---------- */
+
+.studio-page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 36px 48px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.studio-masthead {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 22px;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow-x: clip;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.studio-masthead strong {
+  color: var(--ink);
+  font-size: 34px;
+  font-weight: 500;
+  letter-spacing: .01em;
+}
+
+.studio-masthead em { color: var(--ink); }
+
+.studio-nav {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: baseline;
+  font-size: 19px;
+}
+
+.studio-nav .spacer { margin-left: auto; }
+
+.studio-nav [aria-current="page"] {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.studio-crumbs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 17px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--rule);
+}
+
+.studio-crumbs .sep { color: var(--muted); }
+.studio-crumbs .here { color: var(--red); }
+
+.studio-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.studio-label {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--red);
+}
+
+.studio-h1 {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 500;
+  line-height: 1.15;
+}
+
+.studio-note {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.studio-prose {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.55;
+  text-wrap: pretty;
+  max-width: 62ch;
+}
+
+.studio-rule { border: 0; border-top: 1px dashed var(--rule); margin: 0; }
+
+.studio-footer {
+  margin-top: auto;
+  padding-top: 24px;
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 14px;
+  color: var(--muted);
+  border-top: 1px dashed var(--rule);
+}
+
+/* ---------- bracketed controls ---------- */
+
+.studio-link,
+.studio-button {
+  font: inherit;
+  font-size: 19px;
+  color: var(--red);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.studio-button:hover {
+  background: var(--red);
+  color: var(--paper);
+  text-decoration: none;
+}
+
+.studio-button.small { font-size: 15px; }
+.studio-button.quiet { color: var(--muted); }
+.studio-button.quiet:hover { background: var(--muted); color: var(--paper); }
+
+/* ---------- tables of projects and works ---------- */
+
+.studio-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.studio-row {
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  padding: 12px 0;
+  border-bottom: 1px dashed var(--rule);
+}
+
+.studio-row:first-child { border-top: 1px dashed var(--rule); }
+
+.studio-row .title {
+  font-size: 22px;
+  min-width: 0;
+}
+
+.studio-row .meta {
+  font-size: 15px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.studio-row .actions {
+  margin-left: auto;
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.studio-tag {
+  font: 12px var(--mono);
+  color: #6b655a;
+  background: var(--paper);
+  padding: 3px 7px;
+  border: 1px solid var(--rule);
+  white-space: nowrap;
+}
+
+.studio-tag.on { color: var(--red); border-color: var(--red); }
+
+/* ---------- plates: the hatched frame a work hangs in ---------- */
+
+.studio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 28px;
+}
+
+.studio-plate {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.studio-plate .frame {
+  aspect-ratio: 4 / 5;
+  border: 1px solid var(--ink);
+  background: var(--hatch);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.studio-plate .frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.studio-plate .caption {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  font-size: 15px;
+}
+
+.studio-plate .caption .fig { color: var(--muted); font-size: 13px; }
+.studio-plate .caption .actions { margin-left: auto; display: flex; gap: 10px; }
+
+.studio-empty {
+  border: 1px dashed var(--rule);
+  background: var(--hatch);
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  font-style: italic;
+  color: #6b655a;
+}
+
+/* ---------- forms ---------- */
+
+.studio-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.studio-field > label {
+  font-size: 15px;
+  font-style: italic;
+  color: var(--red);
+}
+
+.studio-field .hint {
+  font-size: 13px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.studio-field .field-error {
+  font-size: 13px;
+  color: var(--red);
+  font-style: italic;
+}
+
+.studio-field .field-error::before { content: "— "; }
+
+.studio-field input[type="text"],
+.studio-field input[type="email"],
+.studio-field input[type="password"],
+.studio-field input[type="number"],
+.studio-field select,
+.studio-field textarea {
+  font: inherit;
+  font-size: 19px;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--ink);
+  border-radius: 0;
+  padding: 5px 2px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.studio-field textarea { resize: vertical; min-height: 5.5em; line-height: 1.5; }
+
+.studio-field input:focus-visible,
+.studio-field select:focus-visible,
+.studio-field textarea:focus-visible {
+  outline: 0;
+  border-bottom-color: var(--red);
+  background: #efeae0;
+}
+
+.studio-field input[type="file"] {
+  font: 13px var(--mono);
+  color: #6b655a;
+  padding: 10px;
+  border: 1px dashed var(--rule);
+  background: var(--hatch);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.studio-field :is(input, select, textarea)[aria-invalid="true"] { border-bottom-color: var(--red); }
+.studio-field input[type="file"][aria-invalid="true"] { border-color: var(--red); }
+
+.studio-field input[type="checkbox"] { accent-color: var(--red); margin: 0; }
+
+.studio-check {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.studio-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.studio-pair {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.studio-pair > * { flex: 1 1 140px; min-width: 0; }
+
+.studio-actions {
+  display: flex;
+  gap: 18px;
+  align-items: baseline;
+  padding-top: 6px;
+}
+
+.studio-actions .spacer { margin-left: auto; }
+
+.studio-errors {
+  border: 1px solid var(--red);
+  padding: 12px 14px;
+  font-size: 16px;
+  color: var(--red);
+}
+
+.studio-errors p { margin: 0 0 4px; font-style: italic; }
+.studio-errors ul { margin: 0; padding-left: 18px; }
+
+.studio-flash {
+  padding: 10px 14px;
+  border: 1px solid var(--ink);
+  font-size: 17px;
+  background: #efeae0;
+}
+
+.studio-flash.alert { border-color: var(--red); color: var(--red); }
+
+/* ---------- modals ---------- */
+
+.studio-modal {
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  padding: 0;
+  width: min(560px, calc(100vw - 48px));
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+  font-family: inherit;
+}
+
+.studio-modal::backdrop { background: rgba(28, 26, 23, .5); }
+
+.studio-modal .sheet {
+  padding: 26px 30px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.studio-modal .sheet > header {
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--rule);
+}
+
+.studio-modal .sheet > header h2 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 500;
+}
+
+.studio-modal .sheet > header .studio-button { margin-left: auto; }
+
+/* ---------- sign in ---------- */
+
+.studio-gate {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.studio-gate .plate {
+  border-left: 1px solid var(--ink);
+  background: var(--hatch);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.studio-gate .pane {
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  justify-content: center;
+  min-width: 0;
+}
+
+@media (max-width: 820px) {
+  .studio-gate { grid-template-columns: minmax(0, 1fr); }
+  .studio-gate .plate { display: none; }
+  .studio-page { padding: 28px 20px 56px; }
+  .studio-masthead { font-size: 16px; }
+  .studio-masthead strong { font-size: 27px; }
+}
+
+/* ---------- yellow mode, same switch as the portfolio ---------- */
+
+.studio[data-yellow] { background: #d6cc3a; }
+.studio[data-yellow] * { color: #9a6200 !important; border-color: #9a6200 !important; }
+.studio[data-yellow] .studio-tag,
+.studio[data-yellow] .studio-flash,
+.studio[data-yellow] .studio-modal { background: #d6cc3a; }
+.studio[data-yellow] .frame,
+.studio[data-yellow] .studio-empty,
+.studio[data-yellow] .studio-gate .plate,
+.studio[data-yellow] input[type="file"] { background: #d6cc3a; }
+.studio[data-yellow] a:hover,
+.studio[data-yellow] .studio-button:hover { background: #9a6200 !important; color: #d6cc3a !important; }
+.studio[data-yellow] ::selection { background: #9a6200; color: #d6cc3a; }
+
+/* button_to wraps its button in a form; keep those on the same baseline as
+   the links beside them. */
+.studio-nav form,
+.studio-row form,
+.studio-actions form,
+.studio-plate form,
+.studio-modal .sheet > header form { display: inline; }

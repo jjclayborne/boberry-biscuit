@@ -3,7 +3,7 @@ class CreateProjects < ActiveRecord::Migration[8.1]
     create_table :projects do |t|
       t.string :name, null: false
       t.text :description
-      t.string :commission, null: false
+      t.string :commission, null: false # comission meaning for whom, ex: for Musgrave Pencil Company
       t.timestamps
     end
   end

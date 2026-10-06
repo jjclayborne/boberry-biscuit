@@ -35,14 +35,17 @@
 
       <section style="display:flex;flex-direction:column;gap:8px;max-width:620px">
         <h2 style="margin:0;font-size:15px;font-weight:400;font-style:italic;color:#7a1414">artist bio</h2>
-        <p style="margin:0;font-size:20px;line-height:1.5;text-wrap:pretty">Nate Kammerer is an artist and designer based in Nashville, Tennessee, currently studying Design Communications and Photography at the Watkins College of Art at Belmont University. His favorite color is <span style="color:#7a1414">dark red</span>.</p>
+        <p style="margin:0;font-size:20px;line-height:1.5;text-wrap:pretty"><%= @bio %> His favorite color is <span style="color:#7a1414">dark red</span>.</p>
       </section>
 
       <section id="selected" style="display:flex;flex-direction:column;gap:10px">
         <h2 style="margin:0;font-size:15px;font-weight:400;font-style:italic;color:#7a1414">selected commissions &amp; sample work</h2>
         <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:20px;line-height:1.35">
-          <% @commissions.each do |p| %>
-            <li style="display:flex;gap:10px"><span style="color:#8a8478">-</span><span><%= p[:kind] %> for <a href="#/<%= p[:id] %>"><%= p[:client] %></a></span></li>
+          <% @commissions.each do |project| %>
+            <li style="display:flex;gap:10px"><span style="color:#8a8478">-</span><span><%= project.kind.presence || project.name.downcase %> for <a href="#/<%= project.to_param %>"><%= project.commission %></a></span></li>
+          <% end %>
+          <% if @commissions.empty? %>
+            <li style="display:flex;gap:10px;color:#8a8478"><span>-</span><em>nothing hung here yet</em></li>
           <% end %>
         </ul>
       </section>
@@ -50,51 +53,78 @@
       <section id="odds" style="display:flex;flex-direction:column;gap:10px">
         <h2 style="margin:0;font-size:15px;font-weight:400;font-style:italic;color:#7a1414">artwork</h2>
         <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:20px;line-height:1.35">
-          <% @artwork.each do |p| %>
-            <li style="display:flex;gap:10px"><span style="color:#8a8478">-</span><a href="#/<%= p[:id] %>"><em><%= p[:client] %></em></a></li>
+          <% @artwork.each do |project| %>
+            <li style="display:flex;gap:10px"><span style="color:#8a8478">-</span><a href="#/<%= project.to_param %>"><em><%= project.name %></em></a></li>
+          <% end %>
+          <% if @artwork.empty? %>
+            <li style="display:flex;gap:10px;color:#8a8478"><span>-</span><em>nothing hung here yet</em></li>
           <% end %>
         </ul>
       </section>
 
       <footer style="margin-top:auto;padding-top:24px;display:flex;gap:28px;flex-wrap:wrap;font-size:14px;color:#8a8478;border-top:1px dashed #b9b2a4">
-        <span>© Nate Kammerer 2026</span>
+        <span>© Nate Kammerer <%= Date.current.year %></span>
         <span>All Rights Reserved</span>
-        <span>last updated 09.22.2026<span style="animation:blink 1s steps(1) infinite">_</span></span>
+        <span>last updated <%= (@last_updated || Time.current).to_date.strftime("%m.%d.%Y") %><span style="animation:blink 1s steps(1) infinite">_</span></span>
+        <% if signed_in? %><%= link_to "[studio]", dashboard_path %><% end %>
         <label style="margin-left:auto;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" data-action="change->portfolio#toggleYellow" style="margin:0;accent-color:#9a6200">yellow?</label>
       </footer>
     </div></div>
 
     <aside style="border-left:1px solid #1c1a17;display:flex;flex-direction:column;min-height:0">
-      <div style="flex:1;min-height:0;position:relative;background:repeating-linear-gradient(135deg,#e8e2d5 0 6px,#efeae0 6px 12px);display:flex;align-items:center;justify-content:center">
-        <span data-portfolio-target="heroLabel" style="font:12px ui-monospace,Menlo,monospace;color:#6b655a;background:#f6f3ec;padding:4px 8px;border:1px solid #b9b2a4"></span>
+      <div style="flex:1;min-height:0;position:relative;background:repeating-linear-gradient(135deg,#e8e2d5 0 6px,#efeae0 6px 12px);display:flex;align-items:center;justify-content:center;overflow:hidden">
+        <% if @heroes.any? %>
+          <% @heroes.each do |work| %>
+            <a href="#/<%= work.project.to_param %>" data-portfolio-target="hero"
+               data-caption="<%= work.project.name %><%= ", #{work.year}" if work.year %>"
+               style="display:none;position:absolute;inset:0;text-decoration:none">
+              <%= image_tag work.display_image, alt: work.name.to_s, style: "width:100%;height:100%;object-fit:cover;display:block" %>
+            </a>
+          <% end %>
+        <% else %>
+          <span style="font:12px ui-monospace,Menlo,monospace;color:#6b655a;background:#f6f3ec;padding:4px 8px;border:1px solid #b9b2a4">no work on the wall yet</span>
+        <% end %>
       </div>
       <div style="border-top:1px solid #1c1a17;padding:10px 14px;font-size:14px;display:flex;justify-content:space-between;gap:12px">
         <em data-portfolio-target="heroCaption"></em>
-        <a href="#" data-action="click->portfolio#shuffleHero:prevent" title="another one">↻</a>
+        <% if @heroes.many? %>
+          <a href="#" data-action="click->portfolio#shuffleHero:prevent" title="another one">↻</a>
+        <% end %>
       </div>
     </aside>
   </div>
 
   <% @projects.each do |project| %>
-    <div data-portfolio-target="screen" data-project-id="<%= project[:id] %>" data-display="flex" style="display:none;height:100vh;flex-direction:column;overflow:hidden">
+    <div data-portfolio-target="screen" data-project-id="<%= project.to_param %>" data-display="flex" style="display:none;height:100vh;flex-direction:column;overflow:hidden">
       <nav style="padding:22px 48px;font-size:17px;display:flex;gap:10px;flex-wrap:wrap;border-bottom:1px dashed #b9b2a4">
         <a href="#" data-action="click->portfolio#goHome">home</a><span style="color:#8a8478">›</span>
-        <span><%= project[:section] %></span><span style="color:#8a8478">›</span>
-        <span style="color:#7a1414"><%= project[:client_lower] %></span>
+        <span><%= project.commission_section? ? "selected commissions & sample work" : "artwork" %></span><span style="color:#8a8478">›</span>
+        <span style="color:#7a1414"><%= project.name.downcase %></span>
       </nav>
       <div style="flex:1;min-height:0;display:flex;overflow-x:auto;overflow-y:hidden">
         <div style="flex:none;width:400px;padding:36px 40px 36px 48px;display:flex;flex-direction:column;gap:14px;border-right:1px solid #1c1a17">
-          <h1 style="margin:0;font-size:34px;font-weight:500"><%= project[:title] %></h1>
-          <p style="margin:0;font-size:14px;font-style:italic;color:#7a1414">for <%= project[:client] %></p>
-          <p style="margin:0;font-size:18px;line-height:1.55;text-wrap:pretty"><%= project[:body] %></p>
+          <h1 style="margin:0;font-size:34px;font-weight:500"><%= project.name %></h1>
+          <% if project.commission_section? %>
+            <p style="margin:0;font-size:14px;font-style:italic;color:#7a1414">for <%= project.commission %></p>
+          <% elsif project.year %>
+            <p style="margin:0;font-size:14px;font-style:italic;color:#7a1414"><%= project.year %></p>
+          <% end %>
+          <p style="margin:0;font-size:18px;line-height:1.55;text-wrap:pretty"><%= project.description %></p>
           <p style="margin:auto 0 0;font-size:14px;color:#8a8478">scroll → → →</p>
         </div>
-        <% project[:images].each do |img| %>
-          <div style="flex:none;height:100%;aspect-ratio:<%= img[:ratio] %>;padding:36px 0 36px 36px;box-sizing:border-box;display:flex;flex-direction:column;gap:8px">
-            <div style="flex:1;background:repeating-linear-gradient(135deg,#e8e2d5 0 6px,#efeae0 6px 12px);border:1px solid #1c1a17;display:flex;align-items:center;justify-content:center">
-              <span style="font:12px ui-monospace,Menlo,monospace;color:#6b655a;background:#f6f3ec;padding:4px 8px;border:1px solid #b9b2a4"><%= img[:label] %></span>
+        <% project.works.each_with_index do |work, index| %>
+          <div style="flex:none;height:100%;aspect-ratio:<%= work.aspect_ratio %>;padding:36px 0 36px 36px;box-sizing:border-box;display:flex;flex-direction:column;gap:8px">
+            <div style="flex:1;min-height:0;background:repeating-linear-gradient(135deg,#e8e2d5 0 6px,#efeae0 6px 12px);border:1px solid #1c1a17;display:flex;align-items:center;justify-content:center;overflow:hidden">
+              <% if work.image.attached? %>
+                <%= image_tag work.display_image, alt: work.name.to_s, loading: "lazy", style: "width:100%;height:100%;object-fit:contain;display:block" %>
+              <% else %>
+                <span style="font:12px ui-monospace,Menlo,monospace;color:#6b655a;background:#f6f3ec;padding:4px 8px;border:1px solid #b9b2a4"><%= work.name %></span>
+              <% end %>
             </div>
-            <span style="font-size:13px;color:#8a8478">fig. <%= img[:n] %></span>
+            <span style="font-size:13px;color:#8a8478">fig. <%= index + 1 %> — <em><%= work.name %></em><%= " · #{work.medium}" if work.medium %><%= " · #{work.year}" if work.year %></span>
+            <% if work.blurb.present? %>
+              <span style="font-size:13px;color:#6b655a;max-width:46ch;text-wrap:pretty"><%= work.blurb %></span>
+            <% end %>
           </div>
         <% end %>
         <div style="flex:none;width:36px"></div>

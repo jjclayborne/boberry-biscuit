@@ -1,17 +1,77 @@
-<%= form_with(model: work) do |form| %>
-  <% if work.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(work.errors.count, "error") %> prohibited this work from being saved:</h2>
+<%#
+  work: the record being edited
+  url / method: where this form posts
+  submit_label: bracketed label for the submit button
+  projects: when given, the work picks its project from this list; otherwise the
+            project is fixed and carried in a hidden field
+%>
+<%= form_with model: work, url: url, method: method, class: "studio-fields", data: { controller: "field-errors" } do |form| %>
+  <%= render "shared/errors", record: work %>
 
-      <ul>
-        <% work.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+  <% if local_assigns[:projects] %>
+    <div class="studio-field">
+      <%= form.label :project_id, "project" %>
+      <%= form.collection_select :project_id, local_assigns[:projects], :id, :name,
+            { prompt: "which project does this hang in?" }, { required: true } %>
     </div>
+  <% else %>
+    <%= form.hidden_field :project_id, value: work.project_id %>
   <% end %>
 
-  <div>
-    <%= form.submit %>
+  <div class="studio-field" data-controller="image-field">
+    <%= form.label :image, work.image.attached? ? "replace the picture" : "picture" %>
+    <%= form.file_field :image, accept: "image/*", required: work.image.attached? ? false : true,
+          data: { action: "change->image-field#preview", image_field_target: "input" } %>
+    <span class="hint">
+      <% if work.image.attached? %>
+        currently <%= work.image.filename %> — choose a file only to swap it out
+      <% else %>
+        a work is the art itself, so it can't be saved without one
+      <% end %>
+    </span>
+    <%= form.hidden_field :image_width, data: { image_field_target: "width" } %>
+    <%= form.hidden_field :image_height, data: { image_field_target: "height" } %>
+    <div class="studio-plate" style="max-width:180px;<%= "display:none" unless work.image.attached? %>" data-image-field-target="preview">
+      <div class="frame" style="aspect-ratio:<%= work.aspect_ratio %>">
+        <% if work.image.attached? %>
+          <%= image_tag work.thumbnail, alt: work.name.to_s, data: { image_field_target: "image" } %>
+        <% else %>
+          <img alt="" data-image-field-target="image">
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="studio-field">
+    <%= form.label :name, "title" %>
+    <%= form.text_field :name, required: true, placeholder: "Untitled (no. 4)" %>
+  </div>
+
+  <div class="studio-pair">
+    <div class="studio-field">
+      <%= form.label :medium, "medium" %>
+      <%= form.text_field :medium, placeholder: "letterpress on newsprint" %>
+    </div>
+
+    <div class="studio-field">
+      <%= form.label :year, "year" %>
+      <%= form.number_field :year, placeholder: Date.current.year, min: 1901, max: Date.current.year + 1 %>
+    </div>
+  </div>
+
+  <div class="studio-field">
+    <%= form.label :blurb, "blurb" %>
+    <%= form.text_area :blurb, rows: 3, maxlength: 280, placeholder: "A line or two for the caption." %>
+  </div>
+
+  <div class="studio-field">
+    <%= form.label :position, "order within the project" %>
+    <%= form.number_field :position, min: 0, value: work.position.to_i.zero? ? nil : work.position,
+          placeholder: "last" %>
+  </div>
+
+  <div class="studio-actions">
+    <%= form.submit submit_label, class: "studio-button" %>
+    <button type="button" class="studio-button small quiet" data-action="studio#close">[cancel]</button>
   </div>
 <% end %>

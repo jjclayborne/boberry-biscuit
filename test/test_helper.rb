@@ -10,6 +10,17 @@ module ActiveSupport
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     fixtures :all
 
-    # Add more helper methods to be used by all tests here...
+    # Every work must have a picture, so give the fixtures one.
+    setup do
+      Work.find_each { |work| work.image.attach(sample_image) unless work.image.attached? }
+    end
+
+    def sample_image
+      { io: File.open(file_fixture("plate.png")), filename: "plate.png", content_type: "image/png" }
+    end
+
+    def sign_in_as(user, password: "letmein-studio")
+      post sign_in_path, params: { email: user.email, password: password }
+    end
   end
 end
