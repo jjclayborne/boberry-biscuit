@@ -1,5 +1,0 @@
-# The studio has exactly one account.
-nate:
-  name: Nate Kammerer
-  email: nate@example.test
-  password_digest: <%= BCrypt::Password.create("letmein-studio", cost: 4) %>
