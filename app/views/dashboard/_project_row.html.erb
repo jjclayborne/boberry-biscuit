@@ -3,7 +3,7 @@
   <span class="title"><%= link_to project.display_name, project %></span>
   <span class="meta"><%= project.listing_label %><%= " · #{project.year}" if project.year %></span>
   <span class="studio-tag"><%= pluralize(project.works.size, "work") %></span>
-  <span class="studio-tag <%= "on" if project.published? %>"><%= project.published? ? "on the portfolio" : "draft" %></span>
+  <span class="studio-tag <%= "active" if project.published? %>"><%= project.published? ? "active" : "draft" %></span>
 
   <span class="actions">
     <button type="button" class="studio-button small" data-action="studio#open"

@@ -4,13 +4,13 @@ class WorksControllerTest < ActionDispatch::IntegrationTest
   setup do
     @work = works(:slat_saw)
     @project = projects(:musgrave)
-    sign_in_as users(:nate)
+    sign_in_as
   end
 
   test "the studio is closed to visitors" do
-    delete sign_out_path
+    delete signout_path
     post works_path, params: { work: { name: "Sneak", project_id: @project.id } }
-    assert_redirected_to sign_in_path
+    assert_redirected_to signin_path
   end
 
   test "uploading a work into a project" do

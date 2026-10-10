@@ -2,7 +2,7 @@ require "application_system_test_case"
 
 class StudioTest < ApplicationSystemTestCase
   test "signing in, creating a project through the modal, and uploading a work" do
-    sign_in_as users(:nate)
+    sign_in_as
     assert_text "What's hanging"
 
     # The new-project modal opens from the dashboard and saves.
@@ -38,11 +38,11 @@ class StudioTest < ApplicationSystemTestCase
 
     # And once it holds a work it can go up on the portfolio.
     click_on "[Publish]"
-    assert_text "on the portfolio"
+    assert_selector ".studio-tag.active", text: "active"
   end
 
   test "a rejected project reopens its modal with the errors showing" do
-    sign_in_as users(:nate)
+    sign_in_as
 
     click_on "[+ New project]"
     within "dialog#project-new" do
@@ -58,7 +58,7 @@ class StudioTest < ApplicationSystemTestCase
   end
 
   test "the cancel button closes a modal without saving" do
-    sign_in_as users(:nate)
+    sign_in_as
 
     click_on "[+ New project]"
     assert_selector "dialog#project-new[open]"
@@ -67,8 +67,25 @@ class StudioTest < ApplicationSystemTestCase
     assert_no_selector "dialog#project-new[open]"
   end
 
+  test "a second account on the roster lands in the same gallery" do
+    sign_in_as studio_account(:first)
+    click_on "[+ New project]"
+    within "dialog#project-new" do
+      fill_in "project[name]", with: "Shared Section"
+      select "artwork", from: "project[section]"
+      click_on "[Create project]"
+    end
+    assert_text "Shared Section"
+
+    click_on "[Sign out]"
+    sign_in_as studio_account(:second)
+
+    assert_text "What's hanging"
+    assert_text "Shared Section"
+  end
+
   test "yellow mode still works in the studio" do
-    sign_in_as users(:nate)
+    sign_in_as
 
     check "yellow?"
     assert_selector "body.studio[data-yellow]"

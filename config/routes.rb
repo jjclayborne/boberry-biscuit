@@ -1,13 +1,12 @@
 Rails.application.routes.draw do
-  # The studio: signing in, and everything behind it.
-  get  "sign_in",  to: "sessions#new"
-  post "sign_in",  to: "sessions#create"
-  delete "sign_out", to: "sessions#destroy"
+  # The studio: signing in, and everything behind it. Who may sign in is a
+  # roster in encrypted credentials -- see StudioAccount -- so there are no
+  # account routes here to create, list, or manage people.
+  get  "signin",  to: "sessions#new"
+  post "signin",  to: "sessions#create"
+  delete "signout", to: "sessions#destroy"
 
   get "dashboard", to: "dashboard#show"
-
-  get   "account", to: "accounts#edit", as: :account
-  patch "account", to: "accounts#update"
 
   resources :projects, except: %i[ new edit ]
   resources :works, only: %i[ index create update destroy ]

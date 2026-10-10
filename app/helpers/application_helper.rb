@@ -10,8 +10,4 @@ module ApplicationHelper
   def modal_open?(id)
     @open_modal == id
   end
-
-  def studio_nav_current(page, current)
-    { current: ("page" if page == current) }
-  end
 end

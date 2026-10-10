@@ -48,6 +48,13 @@ Rails.application.configure do
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true
 
+  # The studio roster, so tests never depend on what is in encrypted credentials.
+  # Two accounts on purpose: the suite asserts they open the same gallery.
+  config.x.studio_accounts = [
+    { email: "nate@example.test", password: "letmein-studio" },
+    { email: "second@example.test", password: "a-different-password" }
+  ]
+
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
 end

@@ -1,8 +1,6 @@
-<%# current: :dashboard | :account %>
 <nav class="studio-nav">
-  <%= link_to "[Dashboard]", dashboard_path, **studio_nav_current(:dashboard, current) %>
-  <%= link_to "[Account]", account_path, **studio_nav_current(:account, current) %>
+  <%= link_to "[Dashboard]", dashboard_path, "aria-current": "page" %>
   <span class="spacer"></span>
   <%= link_to "[the site ↗]", root_path, target: "_blank", rel: "noopener" %>
-  <%= button_to "[Sign out]", sign_out_path, method: :delete, class: "studio-button" %>
+  <%= button_to "[Sign out]", signout_path, method: :delete, class: "studio-button" %>
 </nav>

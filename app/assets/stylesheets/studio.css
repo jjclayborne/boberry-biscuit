@@ -219,7 +219,15 @@
   white-space: nowrap;
 }
 
-.studio-tag.on { color: var(--red); border-color: var(--red); }
+.studio-tag.active {
+  color: var(--paper);
+  background: var(--red);
+  border-color: var(--red);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.studio-tag.active::before { content: "● "; }
 
 /* ---------- plates: the hatched frame a work hangs in ---------- */
 
@@ -477,6 +485,7 @@
 .studio[data-yellow] .studio-empty,
 .studio[data-yellow] .studio-gate .plate,
 .studio[data-yellow] input[type="file"] { background: #d6cc3a; }
+.studio[data-yellow] .studio-tag.active { background: #1438ff; border-color: #1438ff !important; color: #fff !important; }
 .studio[data-yellow] a:hover,
 .studio[data-yellow] .studio-button:hover { background: #9a6200 !important; color: #d6cc3a !important; }
 .studio[data-yellow] ::selection { background: #9a6200; color: #d6cc3a; }

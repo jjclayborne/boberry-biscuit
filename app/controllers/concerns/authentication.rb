@@ -1,12 +1,15 @@
-# Session-cookie authentication for the studio side of the site. Everything is
-# closed by default; pages meant for visitors opt out with
-# `allow_unauthenticated_access`.
+# Session-cookie authentication for the studio. Everything is closed by default;
+# pages meant for visitors opt out with `allow_unauthenticated_access`.
+#
+# The session carries the signed-in email and nothing else. It is checked back
+# against the roster on every request, so removing someone from the list in
+# credentials locks them out immediately, even mid-session.
 module Authentication
   extend ActiveSupport::Concern
 
   included do
     before_action :require_authentication
-    helper_method :current_user, :signed_in?
+    helper_method :current_account, :signed_in?
   end
 
   class_methods do
@@ -17,32 +20,32 @@ module Authentication
 
   private
 
-  def current_user
-    return @current_user if defined?(@current_user)
+  def current_account
+    return @current_account if defined?(@current_account)
 
-    @current_user = session[:user_id] && User.find_by(id: session[:user_id])
+    @current_account = session[:account_email] && StudioAccount.find(session[:account_email])
   end
 
   def signed_in?
-    current_user.present?
+    current_account.present?
   end
 
   def require_authentication
     return if signed_in?
 
     session[:return_to] = request.fullpath if request.get? || request.head?
-    redirect_to sign_in_path, alert: "Sign in to get into the studio."
+    redirect_to signin_path, alert: "Sign in to get into the studio."
   end
 
-  def sign_in(user)
+  def signin(account)
     reset_session
-    session[:user_id] = user.id
-    @current_user = user
+    session[:account_email] = account.email
+    @current_account = account
   end
 
-  def sign_out
+  def signout
     reset_session
-    @current_user = nil
+    @current_account = nil
   end
 
   def after_sign_in_path

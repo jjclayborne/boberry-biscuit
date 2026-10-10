@@ -1,14 +1,10 @@
-# Seeds the studio's one account and the projects the portfolio was first
-# designed around. Safe to run repeatedly.
+# Seeds the projects the portfolio was first designed around. Safe to run
+# repeatedly.
+#
+# Nothing here creates accounts: who may sign in is a roster in encrypted
+# credentials (`bin/rails credentials:edit`, key `studio_accounts`), and the
+# gallery below is the one every account on that list opens.
 require_relative "seeds/placeholder_image"
-
-owner = User.first || User.new
-owner.update!(
-  name: "Nate Kammerer",
-  email: "nate@boberrybiscuit.test",
-  password: ENV.fetch("SEED_PASSWORD", "letmein-studio"),
-  password_confirmation: ENV.fetch("SEED_PASSWORD", "letmein-studio")
-)
 
 PROJECT_SEEDS = [
   { slug: "musgrave", name: "Photography", kind: "photography", commission: "Musgrave Pencil Company", section: "commission", year: 2025,
@@ -57,4 +53,4 @@ PROJECT_SEEDS.each_with_index do |attributes, index|
 end
 
 puts "Seeded #{Project.count} projects and #{Work.count} works."
-puts "Sign in at /sign_in as #{owner.email}"
+puts "Sign in at /sign_in as one of: #{StudioAccount.roster.map(&:email).join(', ').presence || '(no studio_accounts in credentials)'}"

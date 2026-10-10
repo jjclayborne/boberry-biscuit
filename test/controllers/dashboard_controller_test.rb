@@ -3,11 +3,11 @@ require "test_helper"
 class DashboardControllerTest < ActionDispatch::IntegrationTest
   test "visitors are sent to sign in" do
     get dashboard_path
-    assert_redirected_to sign_in_path
+    assert_redirected_to signin_path
   end
 
   test "the dashboard lists both sections and carries the create modals" do
-    sign_in_as users(:nate)
+    sign_in_as
     get dashboard_path
 
     assert_response :success

@@ -2,7 +2,7 @@
 
 <div class="studio-page">
   <%= render "shared/masthead", subtitle: "the studio" %>
-  <%= render "shared/nav", current: :dashboard %>
+  <%= render "shared/nav" %>
 
   <nav class="studio-crumbs">
     <%= link_to "dashboard", dashboard_path %><span class="sep">›</span>
@@ -31,7 +31,7 @@
 
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding-top:4px">
       <span class="studio-tag"><%= pluralize(@works.size, "work") %></span>
-      <span class="studio-tag <%= "on" if @project.published? %>"><%= @project.published? ? "on the portfolio" : "draft" %></span>
+      <span class="studio-tag <%= "active" if @project.published? %>"><%= @project.published? ? "active" : "draft" %></span>
       <span class="studio-tag">/<%= @project.to_param %></span>
     </div>
 

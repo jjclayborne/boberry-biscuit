@@ -3,13 +3,13 @@ require "test_helper"
 class ProjectsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @project = projects(:musgrave)
-    sign_in_as users(:nate)
+    sign_in_as
   end
 
   test "the studio is closed to visitors" do
-    delete sign_out_path
+    delete signout_path
     get project_path(@project)
-    assert_redirected_to sign_in_path
+    assert_redirected_to signin_path
   end
 
   test "index sends you to the dashboard" do

@@ -8,10 +8,10 @@
 
     <section class="studio-section" style="max-width:420px">
       <h2 class="studio-label">sign in</h2>
-      <p class="studio-prose">The portfolio out front is for everyone. Back here is just
-        for you — where projects get arranged and works get hung.</p>
+      <p class="studio-prose">The portfolio out front is for everyone. Back here is for
+        the few people on the studio's list — where projects get arranged and works get hung.</p>
 
-      <%= form_with url: sign_in_path, method: :post, class: "studio-fields", style: "margin-top:14px", data: { controller: "field-errors" } do |form| %>
+      <%= form_with url: signin_path, method: :post, class: "studio-fields", style: "margin-top:14px", data: { controller: "field-errors" } do |form| %>
         <div class="studio-field">
           <%= form.label :email, "email" %>
           <%= form.email_field :email, value: @email, autofocus: true, autocomplete: "email", required: true %>
@@ -29,11 +29,11 @@
       <% end %>
     </section>
 
-    <p class="studio-note">Forgotten the password? Set a new one from the console:
-      <code>bin/rails runner 'User.first.update!(password: "…")'</code></p>
+    <p class="studio-note">Adding someone, or changing a password? Edit the list at the
+      top of <code>app/models/studio_account.rb</code>.</p>
   </div>
 
   <div class="plate">
-    <span class="studio-tag">the studio — Nate only</span>
+    <span class="studio-tag">the studio — by invitation</span>
   </div>
 </div>
