@@ -34,7 +34,12 @@
     .work-viewer .plate .close:hover{background:var(--red);color:var(--paper);text-decoration:none}
     .work-viewer .look{flex:1;min-height:0;display:flex;gap:18px}
     .work-viewer .stage{flex:1;min-width:0;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid var(--ink);background:var(--hatch);cursor:crosshair}
-    .work-viewer .stage img{display:block;width:100%;height:100%;object-fit:contain}
+    .work-viewer .stage img,.work-viewer .stage video{display:block;width:100%;height:100%;object-fit:contain}
+    /* The stage and the pane both carry display rules, so `hidden` needs to win. */
+    .work-viewer .stage [hidden],.work-viewer .pane[hidden]{display:none}
+    /* Nothing to magnify, so no crosshair inviting the attempt. The stage keeps
+       its hatch behind the video, the way every other frame on the site does. */
+    .work-viewer .stage.showing-video{cursor:default}
     .work-viewer .lens{position:absolute;display:none;pointer-events:none;border:1px solid var(--ink);box-shadow:0 0 0 9999px rgba(74, 21, 16,.22)}
     .work-viewer .pane{flex:none;width:42%;position:relative;overflow:hidden;border:1px solid var(--ink);background:var(--hatch)}
     .work-viewer .pane img{position:absolute;top:0;left:0;max-width:none;visibility:hidden;transform-origin:0 0}
@@ -146,7 +151,9 @@
         <span><%= project.commission_section? ? "selected commissions & sample work" : "artwork" %></span><span style="color:var(--muted)">›</span>
         <span style="color:var(--red)"><%= project.name.downcase %></span>
       </nav>
-      <div style="flex:1;min-height:0;display:flex;overflow-x:auto;overflow-y:hidden">
+      <%# `media` starts a video when it scrolls into the row and stops it when
+          it leaves, so a project of twenty videos plays the ones on screen. %>
+      <div data-controller="media" style="flex:1;min-height:0;display:flex;overflow-x:auto;overflow-y:hidden">
         <div style="flex:none;width:400px;padding:36px 40px 36px 48px;display:flex;flex-direction:column;gap:14px;border-right:1px solid var(--ink)">
           <h1 style="margin:0;font-size:34px;font-weight:500"><%= project.name %></h1>
           <% if project.commission_section? %>
@@ -163,15 +170,18 @@
               <% if work.image.attached? %>
                 <%# The same URL the viewer opens, so the browser has the picture already. %>
                 <% picture = url_for(work.display_image) %>
-                <button type="button" title="see it close up" aria-label="See <%= work.name %> close up"
+                <button type="button" title="<%= work.video? ? "watch it big" : "see it close up" %>"
+                        aria-label="<%= work.video? ? "Watch #{work.name} big" : "See #{work.name} close up" %>"
                         data-action="viewer#open"
                         data-viewer-src-param="<%= picture %>"
+                        data-viewer-video-param="<%= work.video? %>"
                         data-viewer-name-param="<%= work.name %>"
                         data-viewer-meta-param="<%= [ work.medium, work.year ].compact.join(" · ") %>"
                         data-viewer-fig-param="<%= index + 1 %>"
                         data-viewer-note-param="<%= work.blurb %>"
                         style="all:unset;display:block;width:100%;height:100%;cursor:zoom-in">
-                  <%= image_tag picture, alt: work.name.to_s, loading: "lazy", style: "width:100%;height:100%;object-fit:contain;display:block" %>
+                  <%= work_media_tag work, picture, alt: work.name.to_s, loading: "lazy",
+                        style: "width:100%;height:100%;object-fit:contain;display:block" %>
                 </button>
               <% else %>
                 <span style="font:12px ui-monospace,Menlo,monospace;color:var(--quiet);background:var(--paper);padding:4px 8px;border:1px solid var(--rule)"><%= work.name %></span>
@@ -202,6 +212,10 @@
       <div class="look">
         <div class="stage" data-viewer-target="stage" data-action="mousemove->viewer#track mouseleave->viewer#rest">
           <img data-viewer-target="image" alt="">
+          <%# A moving work gets the controls instead of the lens: this is the
+              one place on the site where someone is looking on purpose, so it
+              is also the one place the sound is theirs to turn on. %>
+          <video data-viewer-target="video" hidden controls loop playsinline muted></video>
           <span class="lens" data-viewer-target="lens"></span>
         </div>
 

@@ -45,7 +45,7 @@
     <hr class="studio-rule">
     <section class="studio-section">
       <h2 class="studio-label">most recently hung</h2>
-      <div class="studio-grid">
+      <div class="studio-grid" data-controller="media">
         <%= render partial: "works/work", collection: recent, as: :work, locals: { show_project: true } %>
       </div>
     </section>

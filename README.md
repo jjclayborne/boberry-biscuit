@@ -8,7 +8,8 @@ Nate Kammerer's portfolio, and the studio behind it.
   throughline, one client. Lives in either the `commission` section (made for someone,
   so it names a `commission`) or the `artwork` section (the artist's own).
 - **Work** — the art itself. Always belongs to a project, and always carries a picture;
-  there is nothing to show without one.
+  there is nothing to show without one. A picture is allowed to move: a JPEG, PNG or
+  WebP hangs as a still, a GIF or an MP4/MOV hangs as a moving one, up to 50MB.
 - **StudioAccount** — an email and password that may sign in. Not an Active Record
   model and there is no users table: an account is *only* a credential, so there is
   nowhere for per-account data to collect.
@@ -82,3 +83,27 @@ Resized variants need libvips or ImageMagick installed. Where neither is present
 app serves the original upload instead of blowing up, and the work's proportions come
 from the dimensions the upload form measures in the browser (`image_width` /
 `image_height`), so the portfolio still hangs each piece at its true shape.
+
+## A note on moving pictures
+
+A GIF and a video are never resized — a resize would flatten either one to its first
+frame — so they are served exactly as uploaded. Two things follow from that:
+
+- **Proportions come from the browser.** Active Storage reads a video's dimensions
+  with ffprobe, which isn't installed here, so what `image_field_controller.js`
+  measures when the file is picked is the only thing keeping a video off the default
+  portrait crop. An upload made any other way (a console, a script) will want
+  `image_width` and `image_height` set by hand.
+- **Upload the size you want served.** There is no 2000px copy standing between a
+  40MB video and whoever opens the page, so the ceiling is 50MB (`Work::MAX_UPLOAD`)
+  and the real advice is to compress before uploading.
+
+Nothing autoplays on its own. `media_controller.js` starts a video when it scrolls
+into view and stops it when it leaves, so a project of twenty videos decodes the two
+you can see; where the reader prefers reduced motion it plays nothing and shows the
+controls instead. The featured window and the hover peek take stills only, because
+both of them crossfade.
+
+Giving video a real poster frame would mean ffmpeg on the server — it isn't in the
+`Dockerfile`, and until it is, the first frame stands in for one via a `#t=0.1`
+fragment on the address.

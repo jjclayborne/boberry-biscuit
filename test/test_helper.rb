@@ -34,6 +34,22 @@ module ActiveSupport
       { io: File.open(file_fixture("plate.png")), filename: "plate.png", content_type: "image/png" }
     end
 
+    # A real two-frame animated GIF, built byte by byte in the absence of any
+    # image tooling on the machine -- `file` reads it back as "GIF image data,
+    # version 89a, 2 x 2".
+    def sample_gif
+      { io: File.open(file_fixture("plate.gif")), filename: "plate.gif", content_type: "image/gif" }
+    end
+
+    # An ISO base media file with a real `ftyp` box and no decodable track.
+    # Every path the app takes through a video -- validation, content type,
+    # skipping the variant, the shape of the markup -- reads the type and the
+    # size and never the frames, so this is enough for all of them. Watching
+    # one actually play is a thing for a human and a real file.
+    def sample_video
+      { io: File.open(file_fixture("plate.mp4")), filename: "plate.mp4", content_type: "video/mp4" }
+    end
+
     def sign_in_as(account = studio_account)
       post signin_path, params: credentials_for(account)
     end

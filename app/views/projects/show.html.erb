@@ -63,7 +63,7 @@
     <h2 class="studio-label">works in this project</h2>
 
     <% if @works.any? %>
-      <div class="studio-grid">
+      <div class="studio-grid" data-controller="media">
         <% @works.each_with_index do |work, index| %>
           <%= render "works/work", work: work, fig: index + 1, edit_modal: "work-#{work.id}-edit" %>
         <% end %>
