@@ -41,6 +41,31 @@ class StudioTest < ApplicationSystemTestCase
     assert_selector ".studio-tag.active", text: "active"
   end
 
+  test "uploading a video, and the studio measuring it in the browser" do
+    sign_in_as
+    visit project_path(projects(:musgrave))
+
+    click_on "[+ Upload work]"
+    assert_selector "dialog#work-new[open]"
+
+    within "dialog#work-new" do
+      attach_file "work[image]", file_fixture("plate.mp4").to_s
+      # The preview opens on the video rather than the picture, and the hidden
+      # fields that decide how the portfolio hangs this work stay empty until
+      # the browser has the file's real proportions. This fixture carries no
+      # decodable track, so the preview is as far as it gets -- the measuring
+      # itself is covered where a real file can be used.
+      assert_selector "video:not([hidden])", visible: :all
+      assert_selector "img[hidden]", visible: :all
+
+      fill_in "work[name]", with: "Lacquer, Running"
+      click_on "[Add work]"
+    end
+
+    assert_text "Lacquer, Running added to Photography"
+    assert_selector ".studio-grid .studio-plate video"
+  end
+
   test "a rejected project reopens its modal with the errors showing" do
     sign_in_as
 

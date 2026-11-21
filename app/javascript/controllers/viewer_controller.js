@@ -13,17 +13,27 @@ const MIN_ZOOM = 1.8
 const MAX_ZOOM = 3.4
 
 export default class extends Controller {
-  static targets = [ "dialog", "stage", "image", "lens", "pane", "zoom", "fig", "name", "meta", "note" ]
+  static targets = [ "dialog", "stage", "image", "video", "lens", "pane", "zoom", "fig", "name", "meta", "note" ]
 
   connect() {
     // Going back out of a project screen with the viewer open would leave the
     // wrong work hanging over the page.
     this.onHashChange = () => this.dialogTarget.close()
     window.addEventListener("hashchange", this.onHashChange)
+
+    // Escape, the [close] button and the hash change all end at the dialog's
+    // own close event, so that is the one place a playing video has to be put
+    // down -- otherwise it keeps running, and talking, behind the page.
+    this.onClose = () => this.stopVideo()
+    this.dialogTarget.addEventListener("close", this.onClose)
   }
 
   disconnect() {
     window.removeEventListener("hashchange", this.onHashChange)
+    // Disconnect can run while the page is being taken apart, and asking for a
+    // target that has already gone raises.
+    if (this.hasDialogTarget) this.dialogTarget.removeEventListener("close", this.onClose)
+    this.stopVideo()
   }
 
   // One dialog serves every work; the plate that was clicked says what to hang
@@ -35,10 +45,26 @@ export default class extends Controller {
     this.noteTarget.textContent = params.note || ""
     this.noteTarget.hidden = !params.note
 
-    // Same URL the plate behind it uses, so the browser has the picture already.
-    this.imageTarget.src = params.src
-    this.imageTarget.alt = params.name || ""
-    this.zoomTarget.src = params.src
+    // A video cannot be magnified the way a photograph can -- there is no still
+    // to put under a lens -- so it takes the whole stage with its own controls,
+    // which is what "see it close up" means for a moving picture.
+    this.playing = Boolean(params.video)
+    this.stopVideo()
+    this.imageTarget.hidden = this.playing
+    this.videoTarget.hidden = !this.playing
+    this.paneTarget.hidden = this.playing
+    this.stageTarget.classList.toggle("showing-video", this.playing)
+
+    // Same URL the plate behind it uses, so the browser has the work already.
+    if (this.playing) {
+      this.videoTarget.src = params.src
+      this.videoTarget.setAttribute("aria-label", params.name || "")
+      this.videoTarget.play().catch(() => {})
+    } else {
+      this.imageTarget.src = params.src
+      this.imageTarget.alt = params.name || ""
+      this.zoomTarget.src = params.src
+    }
 
     this.rest()
     this.dialogTarget.showModal()
@@ -48,9 +74,21 @@ export default class extends Controller {
     this.dialogTarget.close()
   }
 
+  // Pausing alone leaves the file buffered and the decoder warm; dropping the
+  // source is what actually lets go of it.
+  stopVideo() {
+    if (!this.hasVideoTarget || !this.videoTarget.getAttribute("src")) return
+
+    this.videoTarget.pause()
+    this.videoTarget.removeAttribute("src")
+    this.videoTarget.load()
+  }
+
   // Follow the cursor: the patch under it lands in the middle of the pane, and
   // the lens marks that patch on the picture.
   track(event) {
+    if (this.playing) return
+
     const picture = this.pictureRect()
     const pane = this.paneTarget.getBoundingClientRect()
     if (!pane.width || !picture.width) return // no pane to magnify into

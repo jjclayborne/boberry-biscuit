@@ -19,24 +19,35 @@
   <% end %>
 
   <div class="studio-field" data-controller="image-field">
-    <%= form.label :image, work.image.attached? ? "replace the picture" : "picture" %>
-    <%= form.file_field :image, accept: "image/*", required: work.image.attached? ? false : true,
+    <%= form.label :image, work.image.attached? ? "replace the picture" : "picture or video" %>
+    <%= form.file_field :image, accept: Work::MEDIA_TYPES.join(","), required: work.image.attached? ? false : true,
           data: { action: "change->image-field#preview", image_field_target: "input" } %>
     <span class="hint">
       <% if work.image.attached? %>
         currently <%= work.image.filename %> — choose a file only to swap it out
       <% else %>
-        a work is the art itself, so it can't be saved without one
+        a work is the art itself, so it can't be saved without one — a photograph,
+        an animated GIF or a video, up to <%= number_to_human_size Work::MAX_UPLOAD %>
       <% end %>
     </span>
     <%= form.hidden_field :image_width, data: { image_field_target: "width" } %>
     <%= form.hidden_field :image_height, data: { image_field_target: "height" } %>
-    <div class="studio-plate" style="max-width:180px;<%= "display:none" unless work.image.attached? %>" data-image-field-target="preview">
+    <%# Both elements are always here and the controller shows whichever suits
+        the file that was picked, so swapping a photograph for a video (or back)
+        needs no new markup from the server. %>
+    <div class="studio-plate" style="max-width:180px;<%= "display:none" unless work.image_stored? %>" data-image-field-target="preview">
       <div class="frame" style="aspect-ratio:<%= work.aspect_ratio %>">
-        <% if work.image.attached? %>
+        <% showing_video = work.image_stored? && work.video? %>
+        <% if work.image_stored? && !work.video? %>
           <%= image_tag work.thumbnail, alt: work.name.to_s, data: { image_field_target: "image" } %>
         <% else %>
-          <img alt="" data-image-field-target="image">
+          <img alt="" data-image-field-target="image" <%= "hidden" if showing_video %>>
+        <% end %>
+        <% if showing_video %>
+          <%= video_tag "#{url_for(work.display_image)}#t=0.1", muted: true, loop: true, playsinline: true,
+                preload: "metadata", controls: true, data: { image_field_target: "video" } %>
+        <% else %>
+          <video hidden muted loop playsinline preload="metadata" controls data-image-field-target="video"></video>
         <% end %>
       </div>
     </div>

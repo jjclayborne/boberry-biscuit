@@ -7,8 +7,12 @@
 %>
 <div class="studio-plate" id="<%= dom_id work %>">
   <div class="frame" style="aspect-ratio:<%= work.aspect_ratio %>">
-    <% if work.image.attached? %>
-      <%= image_tag work.thumbnail, alt: work.name.to_s, loading: "lazy" %>
+    <% if work.image_stored? %>
+      <%= work_media_tag work, work.thumbnail, alt: work.name.to_s, loading: "lazy" %>
+    <% elsif work.image.attached? %>
+      <%# A file picked in a form that was then rejected: the upload is in hand
+          but has no address to be served from until the work saves. %>
+      <span class="studio-tag">not saved yet</span>
     <% else %>
       <span class="studio-tag">no picture</span>
     <% end %>

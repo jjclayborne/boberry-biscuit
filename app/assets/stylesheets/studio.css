@@ -260,12 +260,18 @@
   overflow: hidden;
 }
 
-.studio-plate .frame img {
+.studio-plate .frame img,
+.studio-plate .frame video {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
+
+/* The upload preview keeps a picture and a video side by side and shows
+   whichever the chosen file calls for, so `hidden` has to beat the rule
+   above. */
+.studio-plate .frame [hidden] { display: none; }
 
 .studio-plate .caption {
   display: flex;
