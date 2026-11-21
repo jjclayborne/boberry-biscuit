@@ -5,11 +5,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
   <style>
-    html,body{margin:0;background:#f6f3ec;color:#1c1a17}
+    html,body{margin:0;background:#ffffff;color:#4a1510}
     body{font-family:"adobe-jenson-pro","Adobe Jenson Pro","Jenson","EB Garamond",Georgia,serif}
     a{color:#7a1414;text-decoration:underline;text-underline-offset:2px}
-    a:hover{color:#1c1a17;background:#7a1414;color:#f6f3ec;text-decoration:none}
-    ::selection{background:#7a1414;color:#f6f3ec}
+    a:hover{color:#4a1510;background:#7a1414;color:#ffffff;text-decoration:none}
+    ::selection{background:#7a1414;color:#ffffff}
     @keyframes blink{50%{opacity:0}}
     .dissolve{transition:opacity .6s ease-in-out}
     @media (prefers-reduced-motion:reduce){.dissolve{transition:none}}
@@ -19,20 +19,20 @@
     body[data-yellow] ::selection{background:#9a6200;color:#d6cc3a}
 
     /* The work viewer: one plate, big, with the magnifier a catalogue gives you. */
-    .work-viewer{box-sizing:border-box;width:min(1340px,calc(100vw - 40px));height:min(900px,calc(100vh - 40px));max-width:none;max-height:none;padding:0;border:1px solid #1c1a17;background:#f6f3ec;color:#1c1a17;font-family:inherit}
-    .work-viewer::backdrop{background:rgba(28,26,23,.6)}
+    .work-viewer{box-sizing:border-box;width:min(1340px,calc(100vw - 40px));height:min(900px,calc(100vh - 40px));max-width:none;max-height:none;padding:0;border:1px solid #4a1510;background:#ffffff;color:#4a1510;font-family:inherit}
+    .work-viewer::backdrop{background:rgba(74, 21, 16,.6)}
     .work-viewer .sheet{height:100%;box-sizing:border-box;padding:18px 22px 20px;display:flex;flex-direction:column;gap:12px}
     .work-viewer .plate{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;flex-shrink:0;padding-bottom:10px;border-bottom:1px dashed #b9b2a4}
     .work-viewer .plate .fig{font-size:14px;color:#8a8478}
     .work-viewer .plate .name{font-size:22px;font-style:italic}
     .work-viewer .plate .meta{font-size:14px;color:#8a8478}
     .work-viewer .plate .close{all:unset;margin-left:auto;font-size:16px;color:#7a1414;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
-    .work-viewer .plate .close:hover{background:#7a1414;color:#f6f3ec;text-decoration:none}
+    .work-viewer .plate .close:hover{background:#7a1414;color:#ffffff;text-decoration:none}
     .work-viewer .look{flex:1;min-height:0;display:flex;gap:18px}
-    .work-viewer .stage{flex:1;min-width:0;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid #1c1a17;background:repeating-linear-gradient(135deg,#e8e2d5 0 6px,#efeae0 6px 12px);cursor:crosshair}
+    .work-viewer .stage{flex:1;min-width:0;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid #4a1510;background:repeating-linear-gradient(135deg,#e8e2d5 0 6px,#efeae0 6px 12px);cursor:crosshair}
     .work-viewer .stage img{display:block;width:100%;height:100%;object-fit:contain}
-    .work-viewer .lens{position:absolute;display:none;pointer-events:none;border:1px solid #1c1a17;box-shadow:0 0 0 9999px rgba(28,26,23,.22)}
-    .work-viewer .pane{flex:none;width:42%;position:relative;overflow:hidden;border:1px solid #1c1a17;background:repeating-linear-gradient(135deg,#e8e2d5 0 6px,#efeae0 6px 12px)}
+    .work-viewer .lens{position:absolute;display:none;pointer-events:none;border:1px solid #4a1510;box-shadow:0 0 0 9999px rgba(74, 21, 16,.22)}
+    .work-viewer .pane{flex:none;width:42%;position:relative;overflow:hidden;border:1px solid #4a1510;background:repeating-linear-gradient(135deg,#e8e2d5 0 6px,#efeae0 6px 12px)}
     .work-viewer .pane img{position:absolute;top:0;left:0;max-width:none;visibility:hidden;transform-origin:0 0}
     .work-viewer .pane .hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:0 28px;text-align:center;font-size:14px;font-style:italic;color:#6b655a}
     .work-viewer .pane.zooming .hint{display:none}
@@ -50,8 +50,8 @@
     <div style="overflow-y:auto;min-height:0;height:100vh;box-sizing:border-box"><div style="padding:40px 48px 32px;min-height:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:36px">
       <header style="display:flex;flex-direction:column;gap:2px;font-size:22px;line-height:1.25;white-space:nowrap;overflow-x:clip;flex-shrink:0;color:#8a8478">
         <div>---------------------------------------------------------------------------------------------------------------------------------</div>
-        <div>---------- <span style="color:#1c1a17;font-size:34px;font-weight:500;letter-spacing:.01em">Nate Kammerer</span> ---------------------------------------------------------------------------------------------------</div>
-        <div>------------------ <em style="color:#1c1a17">artist, designer, photographer</em> ----------------------------------------------------------</div>
+        <div>---------- <span style="color:#4a1510;font-size:34px;font-weight:500;letter-spacing:.01em">Nate Kammerer</span> ---------------------------------------------------------------------------------------------------</div>
+        <div>------------------ <em style="color:#4a1510">artist, designer, photographer</em> ----------------------------------------------------------</div>
         <div>---------------------------------------------------------------------------------------------------------------------------------</div>
       </header>
 
@@ -109,7 +109,7 @@
       </footer>
     </div></div>
 
-    <aside style="border-left:1px solid #1c1a17;display:flex;flex-direction:column;min-height:0">
+    <aside style="border-left:1px solid #4a1510;display:flex;flex-direction:column;min-height:0">
       <div style="flex:1;min-height:0;position:relative;background:repeating-linear-gradient(135deg,#e8e2d5 0 6px,#efeae0 6px 12px);display:flex;align-items:center;justify-content:center;overflow:hidden">
         <% if @heroes.any? %>
           <% @heroes.each do |work| %>
@@ -120,13 +120,13 @@
             </a>
           <% end %>
         <% else %>
-          <span style="font:12px ui-monospace,Menlo,monospace;color:#6b655a;background:#f6f3ec;padding:4px 8px;border:1px solid #b9b2a4">no work on the wall yet</span>
+          <span style="font:12px ui-monospace,Menlo,monospace;color:#6b655a;background:#ffffff;padding:4px 8px;border:1px solid #b9b2a4">no work on the wall yet</span>
         <% end %>
         <% 2.times do %>
           <img data-portfolio-target="peek" class="dissolve" alt="" style="opacity:0;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none">
         <% end %>
       </div>
-      <div style="border-top:1px solid #1c1a17;padding:10px 14px;font-size:14px;display:flex;justify-content:space-between;gap:12px">
+      <div style="border-top:1px solid #4a1510;padding:10px 14px;font-size:14px;display:flex;justify-content:space-between;gap:12px">
         <em data-portfolio-target="heroCaption"></em>
         <% if @heroes.many? %>
           <a href="#" data-action="click->portfolio#shuffleHero:prevent" title="another one">↻</a>
@@ -143,7 +143,7 @@
         <span style="color:#7a1414"><%= project.name.downcase %></span>
       </nav>
       <div style="flex:1;min-height:0;display:flex;overflow-x:auto;overflow-y:hidden">
-        <div style="flex:none;width:400px;padding:36px 40px 36px 48px;display:flex;flex-direction:column;gap:14px;border-right:1px solid #1c1a17">
+        <div style="flex:none;width:400px;padding:36px 40px 36px 48px;display:flex;flex-direction:column;gap:14px;border-right:1px solid #4a1510">
           <h1 style="margin:0;font-size:34px;font-weight:500"><%= project.name %></h1>
           <% if project.commission_section? %>
             <p style="margin:0;font-size:14px;font-style:italic;color:#7a1414">for <%= project.commission %></p>
@@ -155,7 +155,7 @@
         </div>
         <% project.works.each_with_index do |work, index| %>
           <div style="flex:none;height:100%;aspect-ratio:<%= work.aspect_ratio %>;padding:36px 0 36px 36px;box-sizing:border-box;display:flex;flex-direction:column;gap:8px">
-            <div style="flex:1;min-height:0;background:repeating-linear-gradient(135deg,#e8e2d5 0 6px,#efeae0 6px 12px);border:1px solid #1c1a17;display:flex;align-items:center;justify-content:center;overflow:hidden">
+            <div style="flex:1;min-height:0;background:repeating-linear-gradient(135deg,#e8e2d5 0 6px,#efeae0 6px 12px);border:1px solid #4a1510;display:flex;align-items:center;justify-content:center;overflow:hidden">
               <% if work.image.attached? %>
                 <%# The same URL the viewer opens, so the browser has the picture already. %>
                 <% picture = url_for(work.display_image) %>
@@ -170,7 +170,7 @@
                   <%= image_tag picture, alt: work.name.to_s, loading: "lazy", style: "width:100%;height:100%;object-fit:contain;display:block" %>
                 </button>
               <% else %>
-                <span style="font:12px ui-monospace,Menlo,monospace;color:#6b655a;background:#f6f3ec;padding:4px 8px;border:1px solid #b9b2a4"><%= work.name %></span>
+                <span style="font:12px ui-monospace,Menlo,monospace;color:#6b655a;background:#ffffff;padding:4px 8px;border:1px solid #b9b2a4"><%= work.name %></span>
               <% end %>
             </div>
             <span style="font-size:13px;color:#8a8478">fig. <%= index + 1 %> — <em><%= work.name %></em><%= " · #{work.medium}" if work.medium %><%= " · #{work.year}" if work.year %></span>

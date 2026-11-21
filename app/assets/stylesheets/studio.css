@@ -2,14 +2,14 @@
  * The studio: sign in, dashboard, and the forms behind the portfolio.
  *
  * Same design language as the public portfolio in app/views/portfolio/show.html.erb
- * -- cream paper, dark red accents, dashed rules, ASCII ornament, Adobe Jenson
+ * -- white paper, faded red-brown ink, dark red accents, dashed rules, ASCII ornament, Adobe Jenson
  * set large. Everything is scoped under `.studio` so the portfolio page, which
  * carries its own inline styles, is left alone.
  */
 
 .studio {
-  --paper: #f6f3ec;
-  --ink: #1c1a17;
+  --paper: #ffffff;
+  --ink: #4a1510;
   --red: #7a1414;
   --muted: #8a8478;
   --rule: #b9b2a4;
@@ -416,7 +416,7 @@
   font-family: inherit;
 }
 
-.studio-modal::backdrop { background: rgba(28, 26, 23, .5); }
+.studio-modal::backdrop { background: rgba(74, 21, 16, .5); }
 
 .studio-modal .sheet {
   padding: 26px 30px 30px;
