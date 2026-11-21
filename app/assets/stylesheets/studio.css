@@ -2,18 +2,25 @@
  * The studio: sign in, dashboard, and the forms behind the portfolio.
  *
  * Same design language as the public portfolio in app/views/portfolio/show.html.erb
- * -- cream paper, dark red accents, dashed rules, ASCII ornament, Adobe Jenson
+ * -- white paper, faded red-brown ink, dark red accents, dashed rules, ASCII ornament, Adobe Jenson
  * set large. Everything is scoped under `.studio` so the portfolio page, which
  * carries its own inline styles, is left alone.
  */
 
 .studio {
-  --paper: #f6f3ec;
-  --ink: #1c1a17;
+  --paper: #ffffff;
+  --ink: #4a1510;
   --red: #7a1414;
-  --muted: #8a8478;
+  /* #736d62 keeps captions at 5.1:1 on white (4.5:1 on the hatch); the old
+     #8a8478 was tuned for cream and drops to 3.7:1 here. */
+  --muted: #736d62;
   --rule: #b9b2a4;
-  --hatch: repeating-linear-gradient(135deg, #e8e2d5 0 6px, #efeae0 6px 12px);
+  /* The hatch behind an empty frame reads as "nothing hung here" -- kept,
+     but quieter against white. --tint is its lighter stop, used flat. */
+  --hatch-a: #f2f0ec;
+  --hatch-b: #f8f7f4;
+  --tint: var(--hatch-b);
+  --hatch: repeating-linear-gradient(135deg, var(--hatch-a) 0 6px, var(--hatch-b) 6px 12px);
   --mono: ui-monospace, Menlo, monospace;
 
   margin: 0;
@@ -335,7 +342,7 @@
 .studio-field textarea:focus-visible {
   outline: 0;
   border-bottom-color: var(--red);
-  background: #efeae0;
+  background: var(--tint);
 }
 
 .studio-field input[type="file"] {
@@ -398,7 +405,7 @@
   padding: 10px 14px;
   border: 1px solid var(--ink);
   font-size: 17px;
-  background: #efeae0;
+  background: var(--tint);
 }
 
 .studio-flash.alert { border-color: var(--red); color: var(--red); }
@@ -416,7 +423,7 @@
   font-family: inherit;
 }
 
-.studio-modal::backdrop { background: rgba(28, 26, 23, .5); }
+.studio-modal::backdrop { background: rgba(74, 21, 16, .5); }
 
 .studio-modal .sheet {
   padding: 26px 30px 30px;
@@ -476,7 +483,7 @@
 
 /* ---------- yellow mode, same switch as the portfolio ---------- */
 
-.studio[data-yellow] { background: #d6cc3a; }
+.studio[data-yellow] { background: #d6cc3a; --tint: #d6cc3a; --hatch: #d6cc3a; }
 .studio[data-yellow] * { color: #9a6200 !important; border-color: #9a6200 !important; }
 .studio[data-yellow] .studio-tag,
 .studio[data-yellow] .studio-flash,

@@ -5,38 +5,42 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
   <style>
-    html,body{margin:0;background:#f6f3ec;color:#1c1a17}
+    /* Same palette as app/assets/stylesheets/studio.css. --muted is 5.1:1 on
+       white; the hatch behind an empty frame is kept, just quieter. */
+    :root{--paper:#ffffff;--ink:#4a1510;--red:#7a1414;--muted:#736d62;--quiet:#6b655a;--rule:#b9b2a4;--hatch-a:#f2f0ec;--hatch-b:#f8f7f4;--hatch:repeating-linear-gradient(135deg,var(--hatch-a) 0 6px,var(--hatch-b) 6px 12px)}
+    html,body{margin:0;background:var(--paper);color:var(--ink)}
     body{font-family:"adobe-jenson-pro","Adobe Jenson Pro","Jenson","EB Garamond",Georgia,serif}
-    a{color:#7a1414;text-decoration:underline;text-underline-offset:2px}
-    a:hover{color:#1c1a17;background:#7a1414;color:#f6f3ec;text-decoration:none}
-    ::selection{background:#7a1414;color:#f6f3ec}
+    a{color:var(--red);text-decoration:underline;text-underline-offset:2px}
+    a:hover{color:var(--ink);background:var(--red);color:var(--paper);text-decoration:none}
+    ::selection{background:var(--red);color:var(--paper)}
     @keyframes blink{50%{opacity:0}}
     .dissolve{transition:opacity .6s ease-in-out}
     @media (prefers-reduced-motion:reduce){.dissolve{transition:none}}
+    body[data-yellow]{--paper:#d6cc3a;--hatch:#d6cc3a}
     body[data-yellow],body[data-yellow] [style*="background"]{background:#d6cc3a !important}
     body[data-yellow] *{color:#9a6200 !important;border-color:#9a6200 !important}
     body[data-yellow] a:hover{background:#9a6200 !important;color:#d6cc3a !important}
     body[data-yellow] ::selection{background:#9a6200;color:#d6cc3a}
 
     /* The work viewer: one plate, big, with the magnifier a catalogue gives you. */
-    .work-viewer{box-sizing:border-box;width:min(1340px,calc(100vw - 40px));height:min(900px,calc(100vh - 40px));max-width:none;max-height:none;padding:0;border:1px solid #1c1a17;background:#f6f3ec;color:#1c1a17;font-family:inherit}
-    .work-viewer::backdrop{background:rgba(28,26,23,.6)}
+    .work-viewer{box-sizing:border-box;width:min(1340px,calc(100vw - 40px));height:min(900px,calc(100vh - 40px));max-width:none;max-height:none;padding:0;border:1px solid var(--ink);background:var(--paper);color:var(--ink);font-family:inherit}
+    .work-viewer::backdrop{background:rgba(74, 21, 16,.6)}
     .work-viewer .sheet{height:100%;box-sizing:border-box;padding:18px 22px 20px;display:flex;flex-direction:column;gap:12px}
-    .work-viewer .plate{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;flex-shrink:0;padding-bottom:10px;border-bottom:1px dashed #b9b2a4}
-    .work-viewer .plate .fig{font-size:14px;color:#8a8478}
+    .work-viewer .plate{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;flex-shrink:0;padding-bottom:10px;border-bottom:1px dashed var(--rule)}
+    .work-viewer .plate .fig{font-size:14px;color:var(--muted)}
     .work-viewer .plate .name{font-size:22px;font-style:italic}
-    .work-viewer .plate .meta{font-size:14px;color:#8a8478}
-    .work-viewer .plate .close{all:unset;margin-left:auto;font-size:16px;color:#7a1414;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
-    .work-viewer .plate .close:hover{background:#7a1414;color:#f6f3ec;text-decoration:none}
+    .work-viewer .plate .meta{font-size:14px;color:var(--muted)}
+    .work-viewer .plate .close{all:unset;margin-left:auto;font-size:16px;color:var(--red);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+    .work-viewer .plate .close:hover{background:var(--red);color:var(--paper);text-decoration:none}
     .work-viewer .look{flex:1;min-height:0;display:flex;gap:18px}
-    .work-viewer .stage{flex:1;min-width:0;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid #1c1a17;background:repeating-linear-gradient(135deg,#e8e2d5 0 6px,#efeae0 6px 12px);cursor:crosshair}
+    .work-viewer .stage{flex:1;min-width:0;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid var(--ink);background:var(--hatch);cursor:crosshair}
     .work-viewer .stage img{display:block;width:100%;height:100%;object-fit:contain}
-    .work-viewer .lens{position:absolute;display:none;pointer-events:none;border:1px solid #1c1a17;box-shadow:0 0 0 9999px rgba(28,26,23,.22)}
-    .work-viewer .pane{flex:none;width:42%;position:relative;overflow:hidden;border:1px solid #1c1a17;background:repeating-linear-gradient(135deg,#e8e2d5 0 6px,#efeae0 6px 12px)}
+    .work-viewer .lens{position:absolute;display:none;pointer-events:none;border:1px solid var(--ink);box-shadow:0 0 0 9999px rgba(74, 21, 16,.22)}
+    .work-viewer .pane{flex:none;width:42%;position:relative;overflow:hidden;border:1px solid var(--ink);background:var(--hatch)}
     .work-viewer .pane img{position:absolute;top:0;left:0;max-width:none;visibility:hidden;transform-origin:0 0}
-    .work-viewer .pane .hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:0 28px;text-align:center;font-size:14px;font-style:italic;color:#6b655a}
+    .work-viewer .pane .hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:0 28px;text-align:center;font-size:14px;font-style:italic;color:var(--quiet)}
     .work-viewer .pane.zooming .hint{display:none}
-    .work-viewer .note{margin:0;flex-shrink:0;max-width:86ch;font-size:14px;color:#6b655a;text-wrap:pretty}
+    .work-viewer .note{margin:0;flex-shrink:0;max-width:86ch;font-size:14px;color:var(--quiet);text-wrap:pretty}
     /* No cursor to follow, or no room for the pane: just the picture, large. */
     @media (max-width:900px),(hover:none){.work-viewer .pane{display:none}.work-viewer .stage{cursor:default}}
     body[data-yellow] .work-viewer,body[data-yellow] .work-viewer .stage,body[data-yellow] .work-viewer .pane{background:#d6cc3a}
@@ -48,10 +52,10 @@
 <div data-controller="portfolio viewer">
   <div data-portfolio-target="screen" data-display="grid" style="display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);height:100vh;overflow:hidden">
     <div style="overflow-y:auto;min-height:0;height:100vh;box-sizing:border-box"><div style="padding:40px 48px 32px;min-height:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:36px">
-      <header style="display:flex;flex-direction:column;gap:2px;font-size:22px;line-height:1.25;white-space:nowrap;overflow-x:clip;flex-shrink:0;color:#8a8478">
+      <header style="display:flex;flex-direction:column;gap:2px;font-size:22px;line-height:1.25;white-space:nowrap;overflow-x:clip;flex-shrink:0;color:var(--muted)">
         <div>---------------------------------------------------------------------------------------------------------------------------------</div>
-        <div>---------- <span style="color:#1c1a17;font-size:34px;font-weight:500;letter-spacing:.01em">Nate Kammerer</span> ---------------------------------------------------------------------------------------------------</div>
-        <div>------------------ <em style="color:#1c1a17">artist, designer, photographer</em> ----------------------------------------------------------</div>
+        <div>---------- <span style="color:var(--ink);font-size:34px;font-weight:500;letter-spacing:.01em">Nate Kammerer</span> ---------------------------------------------------------------------------------------------------</div>
+        <div>------------------ <em style="color:var(--ink)">artist, designer, photographer</em> ----------------------------------------------------------</div>
         <div>---------------------------------------------------------------------------------------------------------------------------------</div>
       </header>
 
@@ -61,35 +65,35 @@
       </nav>
 
       <section style="display:flex;flex-direction:column;gap:8px;max-width:620px">
-        <h2 style="margin:0;font-size:15px;font-weight:400;font-style:italic;color:#7a1414">artist bio</h2>
-        <p style="margin:0;font-size:20px;line-height:1.5;text-wrap:pretty"><%= @bio %> His favorite color is <span style="color:#7a1414">dark red</span>.</p>
+        <h2 style="margin:0;font-size:15px;font-weight:400;font-style:italic;color:var(--red)">artist bio</h2>
+        <p style="margin:0;font-size:20px;line-height:1.5;text-wrap:pretty"><%= @bio %> His favorite color is <span style="color:var(--red)">dark red</span>.</p>
       </section>
 
       <section id="selected" style="display:flex;flex-direction:column;gap:10px">
-        <h2 style="margin:0;font-size:15px;font-weight:400;font-style:italic;color:#7a1414">selected commissions &amp; sample work</h2>
+        <h2 style="margin:0;font-size:15px;font-weight:400;font-style:italic;color:var(--red)">selected commissions &amp; sample work</h2>
         <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:20px;line-height:1.35">
           <% @commissions.each do |project| %>
-            <li style="display:flex;gap:10px"><span style="color:#8a8478">-</span><span><%= project.kind.presence || project.name.downcase %> for <a href="#/<%= project.to_param %>" data-action="mouseenter->portfolio#peek focus->portfolio#peek mouseleave->portfolio#unpeek blur->portfolio#unpeek" data-portfolio-works-param="<%= peek_works(project) %>"><%= project.commission %></a></span></li>
+            <li style="display:flex;gap:10px"><span style="color:var(--muted)">-</span><span><%= project.kind.presence || project.name.downcase %> for <a href="#/<%= project.to_param %>" data-action="mouseenter->portfolio#peek focus->portfolio#peek mouseleave->portfolio#unpeek blur->portfolio#unpeek" data-portfolio-works-param="<%= peek_works(project) %>"><%= project.commission %></a></span></li>
           <% end %>
           <% if @commissions.empty? %>
-            <li style="display:flex;gap:10px;color:#8a8478"><span>-</span><em>nothing hung here yet</em></li>
+            <li style="display:flex;gap:10px;color:var(--muted)"><span>-</span><em>nothing hung here yet</em></li>
           <% end %>
         </ul>
       </section>
 
       <section id="odds" style="display:flex;flex-direction:column;gap:10px">
-        <h2 style="margin:0;font-size:15px;font-weight:400;font-style:italic;color:#7a1414">artwork</h2>
+        <h2 style="margin:0;font-size:15px;font-weight:400;font-style:italic;color:var(--red)">artwork</h2>
         <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:20px;line-height:1.35">
           <% @artwork.each do |project| %>
-            <li style="display:flex;gap:10px"><span style="color:#8a8478">-</span><a href="#/<%= project.to_param %>" data-action="mouseenter->portfolio#peek focus->portfolio#peek mouseleave->portfolio#unpeek blur->portfolio#unpeek" data-portfolio-works-param="<%= peek_works(project) %>"><em><%= project.name %></em></a></li>
+            <li style="display:flex;gap:10px"><span style="color:var(--muted)">-</span><a href="#/<%= project.to_param %>" data-action="mouseenter->portfolio#peek focus->portfolio#peek mouseleave->portfolio#unpeek blur->portfolio#unpeek" data-portfolio-works-param="<%= peek_works(project) %>"><em><%= project.name %></em></a></li>
           <% end %>
           <% if @artwork.empty? %>
-            <li style="display:flex;gap:10px;color:#8a8478"><span>-</span><em>nothing hung here yet</em></li>
+            <li style="display:flex;gap:10px;color:var(--muted)"><span>-</span><em>nothing hung here yet</em></li>
           <% end %>
         </ul>
       </section>
 
-      <footer style="margin-top:auto;padding-top:24px;display:flex;gap:28px;flex-wrap:wrap;font-size:14px;color:#8a8478;border-top:1px dashed #b9b2a4">
+      <footer style="margin-top:auto;padding-top:24px;display:flex;gap:28px;flex-wrap:wrap;font-size:14px;color:var(--muted);border-top:1px dashed var(--rule)">
         <span>© Nate Kammerer <%= Date.current.year %></span>
         <span>All Rights Reserved</span>
         <span>last updated <%= (@last_updated || Time.current).to_date.strftime("%m.%d.%Y") %><span style="animation:blink 1s steps(1) infinite">_</span></span>
@@ -109,8 +113,8 @@
       </footer>
     </div></div>
 
-    <aside style="border-left:1px solid #1c1a17;display:flex;flex-direction:column;min-height:0">
-      <div style="flex:1;min-height:0;position:relative;background:repeating-linear-gradient(135deg,#e8e2d5 0 6px,#efeae0 6px 12px);display:flex;align-items:center;justify-content:center;overflow:hidden">
+    <aside style="border-left:1px solid var(--ink);display:flex;flex-direction:column;min-height:0">
+      <div style="flex:1;min-height:0;position:relative;background:var(--hatch);display:flex;align-items:center;justify-content:center;overflow:hidden">
         <% if @heroes.any? %>
           <% @heroes.each do |work| %>
             <a href="#/<%= work.project.to_param %>" data-portfolio-target="hero" class="dissolve"
@@ -120,13 +124,13 @@
             </a>
           <% end %>
         <% else %>
-          <span style="font:12px ui-monospace,Menlo,monospace;color:#6b655a;background:#f6f3ec;padding:4px 8px;border:1px solid #b9b2a4">no work on the wall yet</span>
+          <span style="font:12px ui-monospace,Menlo,monospace;color:var(--quiet);background:var(--paper);padding:4px 8px;border:1px solid var(--rule)">no work on the wall yet</span>
         <% end %>
         <% 2.times do %>
           <img data-portfolio-target="peek" class="dissolve" alt="" style="opacity:0;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none">
         <% end %>
       </div>
-      <div style="border-top:1px solid #1c1a17;padding:10px 14px;font-size:14px;display:flex;justify-content:space-between;gap:12px">
+      <div style="border-top:1px solid var(--ink);padding:10px 14px;font-size:14px;display:flex;justify-content:space-between;gap:12px">
         <em data-portfolio-target="heroCaption"></em>
         <% if @heroes.many? %>
           <a href="#" data-action="click->portfolio#shuffleHero:prevent" title="another one">↻</a>
@@ -137,25 +141,25 @@
 
   <% @projects.each do |project| %>
     <div data-portfolio-target="screen" data-project-id="<%= project.to_param %>" data-display="flex" style="display:none;height:100vh;flex-direction:column;overflow:hidden">
-      <nav style="padding:22px 48px;font-size:17px;display:flex;gap:10px;flex-wrap:wrap;border-bottom:1px dashed #b9b2a4">
-        <a href="#" data-action="click->portfolio#goHome">home</a><span style="color:#8a8478">›</span>
-        <span><%= project.commission_section? ? "selected commissions & sample work" : "artwork" %></span><span style="color:#8a8478">›</span>
-        <span style="color:#7a1414"><%= project.name.downcase %></span>
+      <nav style="padding:22px 48px;font-size:17px;display:flex;gap:10px;flex-wrap:wrap;border-bottom:1px dashed var(--rule)">
+        <a href="#" data-action="click->portfolio#goHome">home</a><span style="color:var(--muted)">›</span>
+        <span><%= project.commission_section? ? "selected commissions & sample work" : "artwork" %></span><span style="color:var(--muted)">›</span>
+        <span style="color:var(--red)"><%= project.name.downcase %></span>
       </nav>
       <div style="flex:1;min-height:0;display:flex;overflow-x:auto;overflow-y:hidden">
-        <div style="flex:none;width:400px;padding:36px 40px 36px 48px;display:flex;flex-direction:column;gap:14px;border-right:1px solid #1c1a17">
+        <div style="flex:none;width:400px;padding:36px 40px 36px 48px;display:flex;flex-direction:column;gap:14px;border-right:1px solid var(--ink)">
           <h1 style="margin:0;font-size:34px;font-weight:500"><%= project.name %></h1>
           <% if project.commission_section? %>
-            <p style="margin:0;font-size:14px;font-style:italic;color:#7a1414">for <%= project.commission %></p>
+            <p style="margin:0;font-size:14px;font-style:italic;color:var(--red)">for <%= project.commission %></p>
           <% elsif project.year %>
-            <p style="margin:0;font-size:14px;font-style:italic;color:#7a1414"><%= project.year %></p>
+            <p style="margin:0;font-size:14px;font-style:italic;color:var(--red)"><%= project.year %></p>
           <% end %>
           <p style="margin:0;font-size:18px;line-height:1.55;text-wrap:pretty"><%= project.description %></p>
-          <p style="margin:auto 0 0;font-size:14px;color:#8a8478">scroll → → →</p>
+          <p style="margin:auto 0 0;font-size:14px;color:var(--muted)">scroll → → →</p>
         </div>
         <% project.works.each_with_index do |work, index| %>
           <div style="flex:none;height:100%;aspect-ratio:<%= work.aspect_ratio %>;padding:36px 0 36px 36px;box-sizing:border-box;display:flex;flex-direction:column;gap:8px">
-            <div style="flex:1;min-height:0;background:repeating-linear-gradient(135deg,#e8e2d5 0 6px,#efeae0 6px 12px);border:1px solid #1c1a17;display:flex;align-items:center;justify-content:center;overflow:hidden">
+            <div style="flex:1;min-height:0;background:var(--hatch);border:1px solid var(--ink);display:flex;align-items:center;justify-content:center;overflow:hidden">
               <% if work.image.attached? %>
                 <%# The same URL the viewer opens, so the browser has the picture already. %>
                 <% picture = url_for(work.display_image) %>
@@ -170,12 +174,12 @@
                   <%= image_tag picture, alt: work.name.to_s, loading: "lazy", style: "width:100%;height:100%;object-fit:contain;display:block" %>
                 </button>
               <% else %>
-                <span style="font:12px ui-monospace,Menlo,monospace;color:#6b655a;background:#f6f3ec;padding:4px 8px;border:1px solid #b9b2a4"><%= work.name %></span>
+                <span style="font:12px ui-monospace,Menlo,monospace;color:var(--quiet);background:var(--paper);padding:4px 8px;border:1px solid var(--rule)"><%= work.name %></span>
               <% end %>
             </div>
-            <span style="font-size:13px;color:#8a8478">fig. <%= index + 1 %> — <em><%= work.name %></em><%= " · #{work.medium}" if work.medium %><%= " · #{work.year}" if work.year %></span>
+            <span style="font-size:13px;color:var(--muted)">fig. <%= index + 1 %> — <em><%= work.name %></em><%= " · #{work.medium}" if work.medium %><%= " · #{work.year}" if work.year %></span>
             <% if work.blurb.present? %>
-              <span style="font-size:13px;color:#6b655a;max-width:46ch;text-wrap:pretty"><%= work.blurb %></span>
+              <span style="font-size:13px;color:var(--quiet);max-width:46ch;text-wrap:pretty"><%= work.blurb %></span>
             <% end %>
           </div>
         <% end %>
